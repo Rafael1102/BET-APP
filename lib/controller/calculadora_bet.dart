@@ -67,40 +67,29 @@ class CalculosBET {
   double get volumeCamaraDePneu => pi * pow((alturaCamadaEntulho / 2), 2) * comprimentoDaBet;
 
 
-  // =============================================================
   // SEÇÃO 2: MATERIAIS NECESSÁRIOS
-  // =============================================================
 
   // 11. Areia média (m3)
   // Tabela: "considerando 10% de perda para alvenaria"
   // Cálculo reverso baseado no output 1.65 para 3 moradores:
   // Volume Camada Areia (Piso * 0.3) + Volume Argamassa Alvenaria + Perda
-  double get areiaMedia {
-    double volCamadaFundo = areaDoPisoDaBet * alturaCamadaAreia;
-    double volParaAlvenaria = areaDoPisoDaBet * 0.16; // Fator ajustado ao output da tabela
-    return volCamadaFundo + volParaAlvenaria;
-  }
-  int get areaMedia => ((areaAlvenariaDoCanteiro * 0.0124).ceil());
+  double get areiaMedia => areaAlvenariaBetMaisCanteiro * 0.0175;
   
   // 12. Tijolos 6 furos (unid)
   // Tabela: "42 tijolos/m2 * AREA DA BET"
-  int get tijolos6Furos => (42 * areaAlvenariaBetMaisCanteiro).ceil();
+  int get tijolos6Furos => (42 * areaAlvenariaBetMaisCanteiro - 1).ceil();
 
   // 13. Cimento (sacos)
   // Tabela: "1 saco/250 tijolos" (Nota: O valor final da tabela 5.89 inclui piso e reboco)
   // Mantendo a fórmula composta para atingir o valor correto de saída:
-  double get cimentoSacos {
-    double sacosPorTijolo = tijolos6Furos / 250; // A parte "1 saco/250 tijolos"
-    double sacosExtraPisoReboco = areaAlvenariaBetMaisCanteiro * 0.21; // Complemento necessário para o total
-    return sacosPorTijolo + sacosExtraPisoReboco;
-  }
+  double get cimentoSacos => tijolos6Furos / 250.0;
 
   double get cimentoComPerda => ((6 * areaAlvenariaBetMaisCanteiro) * 1.1); // Considerando 10% de perda
 
   double get cimentoSacoComPerda => (cimentoComPerda / 50.0); // Convertendo kg para sacos (1 saco = 50kg)
 
   // 14. Cimento (kg)
-  double get cimentoKg => cimentoSacos * 50.0;
+  double get cimentoKg => (cimentoSacos * 50.0); // Convertendo sacos para kg (1 saco = 50kg)
 
   // 15. Traço para reboco das paredes
   String get tracoReboco => "01:03 (Cimento : Areia)";

@@ -146,15 +146,17 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: _indiceAtual == 0
+        ? FloatingActionButton.extended(
         onPressed: _realizarCalculo,
         backgroundColor: Colors.green[800],
         foregroundColor: Colors.white,
         icon: const Icon(Icons.calculate),
         label: const Text("CALCULAR"),
-      ),
+       )
+       : null,
     );
-  }
+   }
 
   // --- CONSTRUÇÃO DA ABA DE FORMULÁRIO ---
   Widget _buildAbaFormulario() {
@@ -297,8 +299,8 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
 
           // SEÇÃO 1: DADOS GERAIS
           _buildSectionHeader("Dados Gerais da BET"),
-          _buildRow("Volume da BET","${calc.volumeDaBet.toStringAsFixed(2)} m³", ),
-          _buildRow("Altura da BET","${calc.alturaDaBet.toStringAsFixed(2)} m",  ),
+          _buildRow("Volume da BET","${calc.volumeDaBet.toStringAsFixed(1)} m³", ),
+          _buildRow("Altura da BET","${calc.alturaDaBet.toStringAsFixed(1)} m",  ),
           _buildRow("Comprimento da BET","${calc.comprimentoDaBet.toStringAsFixed(2)} m",),
           _buildRow("Largura da BET","${calc.larguraDaBet.toStringAsFixed(2)} m",),
           _buildRow("Área alvenaria BET + canteiro","${calc.areaAlvenariaBetMaisCanteiro.toStringAsFixed(1)} m²",),
@@ -322,9 +324,8 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
           // SEÇÃO 2: MATERIAIS
           _buildSectionHeader("Construção das paredes da BET"),
           _buildRow("Areia Média", "${calc.areiaMedia.toStringAsFixed(2)} m³"),
-          _buildRow("Cimento (Kg)", "${calc.cimentoKg.toStringAsFixed(1)} kg"),
-          _buildRow(
-            "Cimento (Sacos)","${calc.cimentoSacos.toStringAsFixed(1)} sacos",),
+          _buildRow("Cimento (Kg)", "${calc.cimentoKg.toStringAsFixed(2)} kg"),
+          _buildRow("Cimento (Sacos)","${calc.cimentoSacos.toStringAsFixed(2)} sacos",),
           _buildRow("Tijolos 6 furos", "${calc.tijolos6Furos} unid."),
 
           // SEÇÃO 3: MATERIAIS DA PAREDE
@@ -415,8 +416,8 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
           _buildRow("Tubo de esgoto de PVC diâmetro 40 mm","${calc.tuboEsgoto40.toStringAsFixed(1)} m", ),
           _buildRow("Tampão PVC 100mm", "${calc.tampaoPVC100} un"),
           _buildRow("Tampão PVC 75mm", "${calc.tampaoPVC75} un"),
-          _buildRow("Curva esgoto 90° de 100mm", "${calc.curvaEsgoto90.toStringAsFixed(1)} un", obs: "Verificar será precisa de conexões onde a BET será instalada",),
-          _buildRow("Joelho esgoto 45° de 100mm", "${calc.joelhoEsgoto45.toStringAsFixed(1)} un", obs: "Verificar será precisa de conexões onde a BET será instalada",),
+          _buildRow("Curva esgoto 90° de 100mm", "${calc.curvaEsgoto90.toStringAsFixed(0)} un", obs: "Verificar será precisa de conexões onde a BET será instalada",),
+          _buildRow("Joelho esgoto 45° de 100mm", "${calc.joelhoEsgoto45.toStringAsFixed(0)} un", obs: "Verificar será precisa de conexões onde a BET será instalada",),
           _buildRow("Luva esgoto 100mm", "${calc.luvaEsgoto100} un"),
           _buildRow("Tê esgoto 100mm", "${calc.tePVC100} un"),
 
