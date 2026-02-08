@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:app_bet/controller/calculadora_bet.dart'; // Importa sua lógica de cálculo
+import 'package:app_bet/controller/calculadora_bet.dart';
 
 void main() => runApp(const ProjetoBET());
 
@@ -10,7 +10,7 @@ class ProjetoBET extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Projeto BET',
+      title: 'BET',
       theme: ThemeData(
         primarySwatch: Colors.green,
         scaffoldBackgroundColor: Colors.white,
@@ -34,23 +34,65 @@ class TelaPrincipal extends StatefulWidget {
 }
 
 class _TelaPrincipalState extends State<TelaPrincipal> {
-  // --- VARIÁVEIS GLOBAIS DA TELA (O "ESTADO") ---
-  int _indiceAtual = 0; // Controla qual aba está visível (0 = Coleta, 1 = Relatório)
-  
-  // Controladores de texto (ficam aqui para os dados não sumirem ao trocar de aba)
+  int _indiceAtual = 0; // Controla qual aba está visível
+
+  // Controladores de texto
   final _moradoresController = TextEditingController();
   final _distanciaController = TextEditingController();
-  
-  // Variáveis de dados
+
   bool? _temAgua;
-  bool _calculoRealizado = false; // Para controlar se mostramos o relatório ou aviso
+  bool _calculoRealizado = false; 
+
+  Widget _buildMenuExpansivo({
+    required String titulo,
+    required List<Widget> itens,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Card(
+        elevation: 0,
+        color: Colors.green[50], // Fundo verdinho padrão
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+          side: BorderSide(color: Colors.green.shade200), // Borda verde
+        ),
+        child: Theme(
+          // Remove a linha divisória padrão do Flutter
+          data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+          child: ExpansionTile(
+            leading: Icon(Icons.info_outline, color: Colors.green[800]),
+            iconColor: Colors.green[800],
+            collapsedIconColor: Colors.green[800],
+            title: Text(
+              titulo,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: Colors.green[800],
+              ),
+            ),
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+                child: Column(
+                  children: [
+                    const Divider(), // Uma linha fina para separar o título
+                    ...itens, // O operador "..." espalha a lista aqui dentro
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
   // --- LÓGICA DO BOTÃO FLUTUANTE ---
   void _realizarCalculo() {
-    // Esconde o teclado
-    FocusScope.of(context).unfocus();
+    FocusScope.of(context).unfocus(); // Esconde teclado
 
-    // Validação básica
+    // Validação: Verifica se o campo está vazio OU se a água é nula
     if (_moradoresController.text.isEmpty || _temAgua == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -71,37 +113,23 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
       );
       return;
     }
-
-    // Se passou na validação:
-    setState(() {
-      _calculoRealizado = true; // Libera a visualização do relatório
-      _indiceAtual = 1; // Muda automaticamente para a aba de Relatório
+    setState(() {_calculoRealizado = true;
+      _indiceAtual = 1; // Vai para a aba de relatório
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // Lista das Telas (Abas)
-    final List<Widget> _telas = [
-      // ABA 0: FORMULÁRIO DE COLETA
-      _buildAbaFormulario(),
-      
-      // ABA 1: RELATÓRIO TÉCNICO
-      _buildAbaRelatorio(),
-    ];
+    final List<Widget> telas = [_buildAbaFormulario(), _buildAbaRelatorio()];
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(_indiceAtual == 0 ? "Coleta de Dados" : "Relatório Técnico"),
+        title: Text(
+          _indiceAtual == 0 ? "Coleta de Dados" : "Relatório Técnico",
+        ),
       ),
-      
-      // IndexedStack preserva o estado das telas (não apaga o que digitou)
-      body: IndexedStack(
-        index: _indiceAtual,
-        children: _telas,
-      ),
-
-      // --- MENU FIXO INFERIOR ---
+      // IndexedStack preserva os dados digitados ao trocar de aba
+      body: IndexedStack(index: _indiceAtual, children: telas),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _indiceAtual,
         onDestinationSelected: (index) {
@@ -110,19 +138,14 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
           });
         },
         destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.edit_note),
-            label: 'Coleta',
-          ),
+          NavigationDestination(icon: Icon(Icons.edit_note), label: 'Coleta'),
           NavigationDestination(
             icon: Icon(Icons.assessment),
             label: 'Relatório',
           ),
         ],
       ),
-
-      // --- BOTÃO FLUTUANTE NO CANTO INFERIOR ESQUERDO ---
-      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat, // <-- O TRUQUE ESTÁ AQUI
+      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _realizarCalculo,
         backgroundColor: Colors.green[800],
@@ -136,10 +159,10 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
   // --- CONSTRUÇÃO DA ABA DE FORMULÁRIO ---
   Widget _buildAbaFormulario() {
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(20, 20, 20, 80), // 80 no final para o botão não tapar
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 80),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
+        children: <Widget>[
           _buildCardInput(
             title: "Dados da Família",
             child: Column(
@@ -167,10 +190,7 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
               ],
             ),
           ),
-          
-          const SizedBox(height: 20),
-
-          _buildCardInput(
+          const SizedBox(height: 20), _buildCardInput(
             title: "Análise do Solo",
             child: Column(
               children: [
@@ -181,17 +201,17 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
                 RadioListTile<bool>(
                   title: const Text("Sim (Lençol Freático Alto)"),
                   value: true,
+                  // ignore: deprecated_member_use
                   groupValue: _temAgua,
-                  onChanged: (val) => setState(() => _temAgua = val),
-                  activeColor: Colors.green,
-                ),
+                  // ignore: deprecated_member_use
+                  onChanged: (val) => setState(() => _temAgua = val),),
                 RadioListTile<bool>(
                   title: const Text("Não (Solo Seco)"),
                   value: false,
+                  // ignore: deprecated_member_use
                   groupValue: _temAgua,
-                  onChanged: (val) => setState(() => _temAgua = val),
-                  activeColor: Colors.green,
-                ),
+                  // ignore: deprecated_member_use
+                  onChanged: (val) => setState(() => _temAgua = val),),
               ],
             ),
           ),
@@ -226,20 +246,21 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
       );
     }
 
-    // Prepara os dados para exibir
-    int moradores = int.parse(_moradoresController.text);
+    int moradores = int.tryParse(_moradoresController.text) ?? 0;
     double distancia = double.tryParse(_distanciaController.text) ?? 4.0;
-    
-    // Instancia a classe de cálculos que criamos anteriormente
+
     final calc = CalculosBET(moradores);
-    
-    // Lógica visual do tipo de fossa
-    final bool alvenariaSuspensa = _temAgua!;
-    final String tituloFossa = alvenariaSuspensa ? "ALVENARIA SUSPENSA" : "ALVENARIA ESCAVADA";
-    final Color corDestaque = alvenariaSuspensa ? Colors.orange[800]! : Colors.green[800]!;
+
+    final bool alvenariaSuspensa = _temAgua ?? false;
+    final String tituloFossa = alvenariaSuspensa
+        ? "ALVENARIA SUSPENSA"
+        : "ALVENARIA ESCAVADA";
+    final Color corDestaque = alvenariaSuspensa
+        ? Colors.orange[800]!
+        : Colors.green[800]!;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 80), // Espaço pro botão
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -253,41 +274,170 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
             ),
             child: Column(
               children: [
-                Text("RECOMENDAÇÃO TÉCNICA", style: TextStyle(color: corDestaque, fontWeight: FontWeight.bold)),
+                Text(
+                  "RECOMENDAÇÃO TÉCNICA",
+                  style: TextStyle(
+                    color: corDestaque,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 const SizedBox(height: 5),
-                Text(tituloFossa, style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: corDestaque), textAlign: TextAlign.center),
+                Text(
+                  tituloFossa,
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: corDestaque,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
               ],
             ),
           ),
-          
-          // Seção 1
-          _buildSectionHeader("Dados Gerais"),
-          _buildRow("Volume da BET", "${calc.volumeBet.toStringAsFixed(2)} m³"),
-          _buildRow("Dimensões (LxC)", "${calc.largura.toStringAsFixed(2)}m x ${calc.comprimento.toStringAsFixed(2)}m"),
-          _buildRow("Profundidade", "${calc.alturaBet.toStringAsFixed(2)} m"),
-          _buildRow("Área Alvenaria", "${calc.areaAlvenariaTotal.toStringAsFixed(2)} m²"),
 
-          // Seção 2
-          _buildSectionHeader("Materiais"),
-          _buildRow("Tijolos (6 furos)", "${calc.tijolos} unid."),
-          _buildRow("Cimento", "${calc.cimentoSacos.toStringAsFixed(1)} sacos"),
-          _buildRow("Areia Média", "${calc.areia.toStringAsFixed(2)} m³"),
-          _buildRow("Brita/Seixo", "${calc.brita.toStringAsFixed(2)} m³"),
-          _buildRow("Pneus", "${calc.pneus} unid."),
-          _buildRow("Entulho", "${calc.entulho.toStringAsFixed(2)} m³", obs: "Material limpo"),
-          _buildRow("Mudas Bananeira", "${calc.mudasBananeira} unid."),
+          // SEÇÃO 1: DADOS GERAIS
+          _buildSectionHeader("Dados Gerais da BET"),
+          _buildRow("Volume da BET","${calc.volumeDaBet.toStringAsFixed(2)} m³", ),
+          _buildRow("Altura da BET","${calc.alturaDaBet.toStringAsFixed(2)} m",  ),
+          _buildRow("Comprimento da BET","${calc.comprimentoDaBet.toStringAsFixed(2)} m",),
+          _buildRow("Largura da BET","${calc.larguraDaBet.toStringAsFixed(2)} m",),
+          _buildRow("Área alvenaria BET + canteiro","${calc.areaAlvenariaBetMaisCanteiro.toStringAsFixed(1)} m²",),
 
-          // Seção 3
-          _buildSectionHeader("Tubulação"),
-          _buildRow("Tubo 100mm", "${calc.tubo100(distancia).toStringAsFixed(1)} m"),
-          _buildRow("Conexões Básicas", "Luva, Tê e Tampão (verificar local)"),
-        ],
-      ),
-    );
+          // (Lista Expansora)
+          _buildMenuExpansivo(
+            titulo: "Ver Detalhes Geométricos",
+            itens: [
+              _buildRow("Área alvenaria BET (paredes int.)","${calc.areaAlvenariaBetParedesInternas.toStringAsFixed(1)} m²",),
+              _buildRow("Altura do canteiro","${calc.alturaDoCanteiro.toStringAsFixed(1)} m",),
+              _buildRow("Área alvenaria do canteiro","${calc.areaAlvenariaDoCanteiro.toStringAsFixed(1)} m²",),
+              _buildRow("Área do piso da BET","${calc.areaDoPisoDaBet.toStringAsFixed(1)} m²",),
+              _buildRow("Alt. da camada de entulho/pneu ","${calc.alturaCamadaEntulho.toStringAsFixed(2)} m²",),
+              _buildRow("Alt. da camada de seixo grosso ou pedra brita","${calc.alturaCamadaBrita.toStringAsFixed(2)} m²",),
+              _buildRow("Alt. da camada de areia","${calc.alturaCamadaAreia.toStringAsFixed(2)} m²",),
+              _buildRow("Alt. da camada de substrato/solo","${calc.alturaCamadaSolo.toStringAsFixed(2)} m²",),
+              _buildRow("Volume da câmara de pneu","${calc.volumeCamaraDePneu.toStringAsFixed(3)} m³",),
+            ],
+          ),
+
+          // SEÇÃO 2: MATERIAIS
+          _buildSectionHeader("Construção das paredes da BET"),
+          _buildRow("Areia Média", "${calc.areiaMedia.toStringAsFixed(2)} m³"),
+          _buildRow("Cimento (Kg)", "${calc.cimentoKg.toStringAsFixed(1)} kg"),
+          _buildRow(
+            "Cimento (Sacos)","${calc.cimentoSacos.toStringAsFixed(1)} sacos",),
+          _buildRow("Tijolos 6 furos", "${calc.tijolos6Furos} unid."),
+
+          // SEÇÃO 3: MATERIAIS DA PAREDE
+          _buildSectionHeader("Para reboco na parede da BET"),
+
+          // LISTA EXPANSORA
+          _buildRow("Traço", calc.tracoReboco),
+          _buildMenuExpansivo(
+            titulo: "Considerado 10% de perda",
+            itens: [
+              _buildRow(
+                "Aditivo Impermeabilizante",
+                "${calc.aditivoImpermeabilizante.toStringAsFixed(1)} L",
+              ),
+              _buildRow(
+                "Areia média",
+                "${calc.areiaMedia.toStringAsFixed(3)} m³",
+              ),
+              _buildRow(
+                "Cimento (Kg)",
+                "${calc.cimentoComPerda.toStringAsFixed(2)} kg",
+              ),
+              _buildRow(
+                "Cimento (Sacos)",
+                "${(calc.cimentoSacoComPerda).toStringAsFixed(2)} sacos",
+              ),
+            ],
+          ),
+
+          // SEÇÃO 4: MATERIAIS DO PISO
+          _buildSectionHeader("Para construção do piso da BET"),
+          _buildRow("Traço", calc.tracoPiso),
+
+          // LISTA EXPANSORA
+          _buildMenuExpansivo(
+            titulo: "Considerado 10% de perda",
+            itens: [
+              _buildRow(
+                "Aditivo Impermeabilizante",
+                "${calc.aditivoImpermeabilizante.toStringAsFixed(1)} L",
+              ),
+              _buildRow("Areia", "${calc.areiaParaPiso.toStringAsFixed(2)} m³"),
+              _buildRow(
+                "Cimento (kg)",
+                "${calc.cimentoKgPerdaPiso.toStringAsFixed(2)} kg",
+              ),
+              _buildRow(
+                "Cimento (sacos)",
+                "${calc.cimentoSacoPerdaPiso.toStringAsFixed(2)} sacos",
+              ),
+              _buildRow(
+                "Pedra Brita/Seixo",
+                "${calc.pedraBritaOuSeixo.toStringAsFixed(2)} m³",
+              ),
+            ],
+          ),
+          // SEÇÃO 5: MATERIAIS PARA PREENCHIMENTO
+          _buildSectionHeader("Para preenchimento da BET de alvenaria"),
+          _buildRow("Pneu Inservível", "${calc.pneuInservivel} unid."),
+          _buildRow(
+            "Entulho/Pedras",
+            "${calc.entulhoPedras.toStringAsFixed(2)} m³",
+            obs: "Material limpo,  Sem resíduos de terra ou outros materiais.",
+          ),
+
+          _buildRow(
+            "Pedra brita ou seixo grosso",
+            "${calc.terraPretaSolo.toStringAsFixed(1)} m³",
+          ),
+          _buildRow(
+            "Areia Média",
+            "${calc.areiaMediaPreenchimento.toStringAsFixed(1)} m³",
+          ),
+          _buildRow(
+            "Terra Preta/Solo",
+            "${calc.terraPretaSolo.toStringAsFixed(1)} m³",
+          ),
+          _buildRow("Mudas Bananeira", "${calc.mudaBananeira} unid."),
+          _buildRow(
+            "Adubo Diverso",
+            "${calc.aduboDiverso.toStringAsFixed(1)} L",
+          ),
+
+          // SEÇÃO 3: Outros materiais
+          _buildSectionHeader("Materiais de Tubulação"),
+          _buildRow("Tubo de esgoto de PVC diâmetro 100 mm", "${calc.tuboEsgoto100.toStringAsFixed(1)} m", ),
+          _buildRow("Tubo de esgoto de PVC diâmetro 75 mm", "${calc.tuboEsgoto75.toStringAsFixed(1)} m", ),
+          _buildRow("Tubo de esgoto de PVC diâmetro 40 mm","${calc.tuboEsgoto40.toStringAsFixed(1)} m", ),
+          _buildRow("Tampão PVC 100mm", "${calc.tampaoPVC100} un"),
+          _buildRow("Tampão PVC 75mm", "${calc.tampaoPVC75} un"),
+          _buildRow("Curva esgoto 90° de 100mm", "${calc.curvaEsgoto90.toStringAsFixed(1)} un", obs: "Verificar será precisa de conexões onde a BET será instalada",),
+          _buildRow("Joelho esgoto 45° de 100mm", "${calc.joelhoEsgoto45.toStringAsFixed(1)} un", obs: "Verificar será precisa de conexões onde a BET será instalada",),
+          _buildRow("Luva esgoto 100mm", "${calc.luvaEsgoto100} un"),
+          _buildRow("Tê esgoto 100mm", "${calc.tePVC100} un"),
+
+
+          const SizedBox(height: 10),
+
+          // LISTA EXPANSORA
+          _buildMenuExpansivo(
+            titulo: "Sugestões e prevenções",
+            itens: [
+          _buildRow("tubo de Esgoto PVC 100MM", "${calc.tuboEsgotoSugestao(distancia).toStringAsFixed(1)} m", obs: "Seugestão para conexão interna..."),
+          _buildRow("Conexões 100mm", "Luva, Tê e Tampão"),
+            ],
+          ),
+        ], // Fecha children
+      ), // Fecha Column
+    ); // Fecha SingleChildScrollView
   }
 
   // --- WIDGETS AUXILIARES ---
-  
+
   Widget _buildCardInput({required String title, required Widget child}) {
     return Card(
       elevation: 2,
@@ -296,7 +446,14 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Text(title, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.green[800])),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.green[800],
+              ),
+            ),
             const Divider(),
             const SizedBox(height: 10),
             child,
@@ -312,25 +469,54 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
       color: Colors.green,
       width: double.infinity,
-      child: Text(title.toUpperCase(), style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+      alignment: Alignment.center,
+      child: Text(
+        title.toUpperCase(),
+        textAlign: TextAlign.center,
+        style: const TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+          fontSize: 19,
+        ),
+      ),
     );
   }
 
   Widget _buildRow(String label, String value, {String? obs}) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.grey.shade200))),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: Colors.grey.shade200)),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(label, style: const TextStyle(fontSize: 16)),
-              Text(value, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              Expanded(
+                child: Text(label, style: const TextStyle(fontSize: 16)),
+              ),
+              Text(
+                value,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ],
           ),
-          if (obs != null) Text("Obs: $obs", style: TextStyle(fontSize: 12, color: Colors.orange[800], fontStyle: FontStyle.italic)),
+          if (obs != null) ...[
+            const SizedBox(height: 4),
+            Text(
+              "Obs: $obs",
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.orange[800],
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+          ],
         ],
       ),
     );
