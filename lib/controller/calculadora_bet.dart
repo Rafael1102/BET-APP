@@ -131,10 +131,10 @@ class CalculosBET {
   int get tePVC100 => 1;
 
   // Tubo 100mm
-  // Tabela: "Distância da BET até a casa + 2m para conexão interna..."
-  double tuboEsgotoSugestao (double distanciaCasa) { return distanciaCasa + 2.0; }
-  
-  double get tuboEsgoto100 => 4.0; // Distância da BET até a casa + 2m para conexão interna até a câmara de pneu
+// Tubo PVC 100mm: Distância da BET até a casa + 2m para conexões
+  double tuboEsgoto100(double distanciaCasa) {
+    return distanciaCasa + 2.0; 
+  }
   double get tuboEsgoto75 => 1.0; //valor fixo
   double get tuboEsgoto40 => 3.0; //valor fixo
 }

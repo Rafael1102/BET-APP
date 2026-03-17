@@ -217,9 +217,7 @@ class GeradorPDF {
             // 4. TUBULAÇÃO
             buildSectionHeader("3. Tubulações de Esgoto"),
             buildItemRow(
-              "Tubo PVC 100mm",
-              "${calc.tuboEsgoto100.toStringAsFixed(0)} un",
-            ),
+              "Tubo PVC 100mm", "${calc.tuboEsgoto100(distanciaCasa).toStringAsFixed(1)} m",),
             buildItemRow(
               "Tubo PVC 75mm",
               "${calc.tuboEsgoto75.toStringAsFixed(1)} m",
@@ -282,7 +280,7 @@ class GeradorPDF {
 [ ] Adubo Diverso: ${calc.aduboDiverso.toStringAsFixed(1)} L
 
 *3. TUBULAÇÃO DE ESGOTO*
-[ ] Tubo PVC 100mm: ${calc.tuboEsgoto100.toStringAsFixed(1)} m
+[ ] Tubo PVC 100mm: ${calc.tuboEsgoto100(distanciaCasa).toStringAsFixed(1)} m
 [ ] Tubo PVC 75mm: ${calc.tuboEsgoto75.toStringAsFixed(1)} m
 [ ] Tubo PVC 40mm: ${calc.tuboEsgoto40.toStringAsFixed(1)} m
 [ ] Tampão PVC 100mm: ${calc.tampaoPVC100} unid.

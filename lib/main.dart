@@ -338,6 +338,7 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
 
     int moradores = int.tryParse(_moradoresController.text) ?? 0;
     final calc = CalculosBET(moradores);
+    double distancia = double.tryParse(_distanciaController.text) ?? 4.0;
 
     final bool alvenariaSuspensa = _temAgua ?? false;
     final String tituloFossa = alvenariaSuspensa
@@ -562,9 +563,7 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
           // SEÇÃO 3: Outros materiais
           _buildSectionHeader("Materiais de Tubulação"),
           _buildRow(
-            "Tubo de esgoto de PVC diâmetro 100 mm",
-            "${calc.tuboEsgoto100.toStringAsFixed(1)} m",
-          ),
+            "Tubo de esgoto de PVC diâmetro 100 mm", "${calc.tuboEsgoto100(distancia).toStringAsFixed(1)} m"),
           _buildRow(
             "Tubo de esgoto de PVC diâmetro 75 mm",
             "${calc.tuboEsgoto75.toStringAsFixed(1)} m",
