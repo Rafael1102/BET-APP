@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:app_bet/controller/calculadora_bet.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:app_bet/utils/gerador_pdf.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 void main() => runApp(const ProjetoBET());
 
@@ -37,11 +41,12 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
   int _indiceAtual = 0; // Controla qual aba está visível
 
   // Controladores de texto
+  final _comunidadeController = TextEditingController();
   final _moradoresController = TextEditingController();
   final _distanciaController = TextEditingController();
 
   bool? _temAgua;
-  bool _calculoRealizado = false; 
+  bool _calculoRealizado = false;
 
   Widget _buildMenuExpansivo({
     required String titulo,
@@ -66,7 +71,7 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
             title: Text(
               titulo,
               style: TextStyle(
-                fontSize: 14,
+                fontSize: 18,
                 fontWeight: FontWeight.bold,
                 color: Colors.green[800],
               ),
@@ -113,7 +118,8 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
       );
       return;
     }
-    setState(() {_calculoRealizado = true;
+    setState(() {
+      _calculoRealizado = true;
       _indiceAtual = 1; // Vai para a aba de relatório
     });
   }
@@ -124,6 +130,19 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
 
     return Scaffold(
       appBar: AppBar(
+        leadingWidth: 110,
+        leading: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const SizedBox(width: 8),
+            Image.asset(
+              'assets/ufra.png',
+              width: 40,
+              height: 40,
+              fit: BoxFit.contain,
+            ),
+          ],
+        ),
         title: Text(
           _indiceAtual == 0 ? "Coleta de Dados" : "Relatório Técnico",
         ),
@@ -145,18 +164,73 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
           ),
         ],
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: _indiceAtual == 0
-        ? FloatingActionButton.extended(
-        onPressed: _realizarCalculo,
-        backgroundColor: Colors.green[800],
-        foregroundColor: Colors.white,
-        icon: const Icon(Icons.calculate),
-        label: const Text("CALCULAR"),
-       )
-       : null,
+          ? FloatingActionButton.extended(
+              onPressed: _realizarCalculo,
+              backgroundColor: Colors.green[800],
+              foregroundColor: Colors.white,
+              icon: const Icon(Icons.calculate),
+              label: const Text("CALCULAR"),
+            )
+          : SpeedDial(
+              icon: Icons.menu,
+              activeIcon: Icons.close,
+              backgroundColor: Colors.green[800],
+              foregroundColor: Colors.white,
+              overlayColor: Colors.black,
+              overlayOpacity: 0.5,
+              spacing: 12,
+              spaceBetweenChildren: 12,
+              elevation: 8,
+              children: [
+                SpeedDialChild(
+                  child: const Icon(Icons.picture_as_pdf),
+                  backgroundColor: Colors.red[700],
+                  foregroundColor: Colors.white,
+                  label: "Salvar relatório em PDF",
+                  onTap: () {
+                    int moradores =
+                        int.tryParse(_moradoresController.text) ?? 0;
+                    double distancia =
+                        double.tryParse(_distanciaController.text) ?? 4.0;
+                    final calc = CalculosBET(moradores);
+                    GeradorPDF.gerarPDF(
+                      calc,
+                      distancia,
+                      _comunidadeController.text,
+                    );
+                  },
+                ),
+                SpeedDialChild(
+                  child: const Icon(Icons.share),
+                  backgroundColor: Colors.blue[700],
+                  foregroundColor: Colors.white,
+                  label: 'Compartilhar Lista de Materiais',
+                  labelStyle: const TextStyle(fontWeight: FontWeight.bold),
+                  onTap: () {
+                    int moradores =
+                        int.tryParse(_moradoresController.text) ?? 0;
+                        double distancia =
+                        double.tryParse(_distanciaController.text) ?? 4.0;
+                    final calc = CalculosBET(moradores);
+                    String comunidade = _comunidadeController.text;
+                    String textoCompartilhamento =
+                        GeradorPDF.gerarTextoCompartilhamento(calc, distancia, comunidade);
+                    Share.share(
+                      textoCompartilhamento,
+                      subject:
+                          'Lista de Materiais BET - $comunidade',
+                    );
+                    setState(() {
+                      _indiceAtual = 0;
+                    });
+                  },
+                ),
+              ],
+            ),
     );
-   }
+  }
 
   // --- CONSTRUÇÃO DA ABA DE FORMULÁRIO ---
   Widget _buildAbaFormulario() {
@@ -169,6 +243,18 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
             title: "Dados da Família",
             child: Column(
               children: [
+                TextField(
+                  controller: _comunidadeController,
+                  keyboardType: TextInputType.text,
+                  textCapitalization: TextCapitalization
+                      .words, // Deixa a primeira letra maiúscula
+                  decoration: const InputDecoration(
+                    labelText: "Nome da Comunidade / Local",
+                    prefixIcon: Icon(Icons.location_on),
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 15),
                 TextField(
                   controller: _moradoresController,
                   keyboardType: TextInputType.number,
@@ -192,8 +278,9 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
               ],
             ),
           ),
-          const SizedBox(height: 20), _buildCardInput(
-            title: "Análise do Solo",
+          const SizedBox(height: 20),
+          _buildCardInput(
+            title: "Estado Solo",
             child: Column(
               children: [
                 const Text(
@@ -206,14 +293,16 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
                   // ignore: deprecated_member_use
                   groupValue: _temAgua,
                   // ignore: deprecated_member_use
-                  onChanged: (val) => setState(() => _temAgua = val),),
+                  onChanged: (val) => setState(() => _temAgua = val),
+                ),
                 RadioListTile<bool>(
                   title: const Text("Não (Solo Seco)"),
                   value: false,
                   // ignore: deprecated_member_use
                   groupValue: _temAgua,
                   // ignore: deprecated_member_use
-                  onChanged: (val) => setState(() => _temAgua = val),),
+                  onChanged: (val) => setState(() => _temAgua = val),
+                ),
               ],
             ),
           ),
@@ -249,8 +338,6 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
     }
 
     int moradores = int.tryParse(_moradoresController.text) ?? 0;
-    double distancia = double.tryParse(_distanciaController.text) ?? 4.0;
-
     final calc = CalculosBET(moradores);
 
     final bool alvenariaSuspensa = _temAgua ?? false;
@@ -281,6 +368,18 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
                   style: TextStyle(
                     color: corDestaque,
                     fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                ),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.asset(
+                    alvenariaSuspensa
+                        ? 'assets/suspensa.png'
+                        : 'assets/escavada.png',
+                    height: 160,
+                    width: double.infinity,
+                    fit: BoxFit.contain,
                   ),
                 ),
                 const SizedBox(height: 5),
@@ -299,25 +398,74 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
 
           // SEÇÃO 1: DADOS GERAIS
           _buildSectionHeader("Dados Gerais da BET"),
-          _buildRow("Volume da BET","${calc.volumeDaBet.toStringAsFixed(1)} m³", ),
-          _buildRow("Altura da BET","${calc.alturaDaBet.toStringAsFixed(1)} m",  ),
-          _buildRow("Comprimento da BET","${calc.comprimentoDaBet.toStringAsFixed(2)} m",),
-          _buildRow("Largura da BET","${calc.larguraDaBet.toStringAsFixed(2)} m",),
-          _buildRow("Área alvenaria BET + canteiro","${calc.areaAlvenariaBetMaisCanteiro.toStringAsFixed(1)} m²",),
+          _buildRow(
+            "Comunidade / Local",
+            _comunidadeController.text.isEmpty
+                ? "Não informado"
+                : _comunidadeController.text,
+          ),
+
+          _buildRow(
+            "Volume da BET",
+            "${calc.volumeDaBet.toStringAsFixed(1)} m³",
+          ),
+          _buildRow(
+            "Altura da BET",
+            "${calc.alturaDaBet.toStringAsFixed(1)} m",
+          ),
+          _buildRow(
+            "Comprimento da BET",
+            "${calc.comprimentoDaBet.toStringAsFixed(2)} m",
+          ),
+          _buildRow(
+            "Largura da BET",
+            "${calc.larguraDaBet.toStringAsFixed(2)} m",
+          ),
+          _buildRow(
+            "Área alvenaria BET + canteiro",
+            "${calc.areaAlvenariaBetMaisCanteiro.toStringAsFixed(1)} m²",
+          ),
 
           // (Lista Expansora)
           _buildMenuExpansivo(
-            titulo: "Ver Detalhes Geométricos",
+            titulo: "Ver Detalhes",
             itens: [
-              _buildRow("Área alvenaria BET (paredes int.)","${calc.areaAlvenariaBetParedesInternas.toStringAsFixed(1)} m²",),
-              _buildRow("Altura do canteiro","${calc.alturaDoCanteiro.toStringAsFixed(1)} m",),
-              _buildRow("Área alvenaria do canteiro","${calc.areaAlvenariaDoCanteiro.toStringAsFixed(1)} m²",),
-              _buildRow("Área do piso da BET","${calc.areaDoPisoDaBet.toStringAsFixed(1)} m²",),
-              _buildRow("Alt. da camada de entulho/pneu ","${calc.alturaCamadaEntulho.toStringAsFixed(2)} m²",),
-              _buildRow("Alt. da camada de seixo grosso ou pedra brita","${calc.alturaCamadaBrita.toStringAsFixed(2)} m²",),
-              _buildRow("Alt. da camada de areia","${calc.alturaCamadaAreia.toStringAsFixed(2)} m²",),
-              _buildRow("Alt. da camada de substrato/solo","${calc.alturaCamadaSolo.toStringAsFixed(2)} m²",),
-              _buildRow("Volume da câmara de pneu","${calc.volumeCamaraDePneu.toStringAsFixed(3)} m³",),
+              _buildRow(
+                "Área alvenaria BET (paredes int.)",
+                "${calc.areaAlvenariaBetParedesInternas.toStringAsFixed(1)} m²",
+              ),
+              _buildRow(
+                "Altura do canteiro",
+                "${calc.alturaDoCanteiro.toStringAsFixed(1)} m",
+              ),
+              _buildRow(
+                "Área alvenaria do canteiro",
+                "${calc.areaAlvenariaDoCanteiro.toStringAsFixed(1)} m²",
+              ),
+              _buildRow(
+                "Área do piso da BET",
+                "${calc.areaDoPisoDaBet.toStringAsFixed(1)} m²",
+              ),
+              _buildRow(
+                "Alt. da camada de entulho/pneu ",
+                "${calc.alturaCamadaEntulho.toStringAsFixed(2)} m²",
+              ),
+              _buildRow(
+                "Alt. da camada de seixo grosso ou pedra brita",
+                "${calc.alturaCamadaBrita.toStringAsFixed(2)} m²",
+              ),
+              _buildRow(
+                "Alt. da camada de areia",
+                "${calc.alturaCamadaAreia.toStringAsFixed(2)} m²",
+              ),
+              _buildRow(
+                "Alt. da camada de substrato/solo",
+                "${calc.alturaCamadaSolo.toStringAsFixed(2)} m²",
+              ),
+              _buildRow(
+                "Volume da câmara de pneu",
+                "${calc.volumeCamaraDePneu.toStringAsFixed(3)} m³",
+              ),
             ],
           ),
 
@@ -325,7 +473,10 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
           _buildSectionHeader("Construção das paredes da BET"),
           _buildRow("Areia Média", "${calc.areiaMedia.toStringAsFixed(2)} m³"),
           _buildRow("Cimento (Kg)", "${calc.cimentoKg.toStringAsFixed(2)} kg"),
-          _buildRow("Cimento (Sacos)","${calc.cimentoSacos.toStringAsFixed(2)} sacos",),
+          _buildRow(
+            "Cimento (Sacos)",
+            "${calc.cimentoSacos.toStringAsFixed(2)} sacos",
+          ),
           _buildRow("Tijolos 6 furos", "${calc.tijolos6Furos} unid."),
 
           // SEÇÃO 3: MATERIAIS DA PAREDE
@@ -334,7 +485,7 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
           // LISTA EXPANSORA
           _buildRow("Traço", calc.tracoReboco),
           _buildMenuExpansivo(
-            titulo: "Considerado 10% de perda",
+            titulo: "Materiais",
             itens: [
               _buildRow(
                 "Aditivo Impermeabilizante",
@@ -361,7 +512,7 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
 
           // LISTA EXPANSORA
           _buildMenuExpansivo(
-            titulo: "Considerado 10% de perda",
+            titulo: "Materiais",
             itens: [
               _buildRow(
                 "Aditivo Impermeabilizante",
@@ -411,27 +562,33 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
 
           // SEÇÃO 3: Outros materiais
           _buildSectionHeader("Materiais de Tubulação"),
-          _buildRow("Tubo de esgoto de PVC diâmetro 100 mm", "${calc.tuboEsgoto100.toStringAsFixed(1)} m", ),
-          _buildRow("Tubo de esgoto de PVC diâmetro 75 mm", "${calc.tuboEsgoto75.toStringAsFixed(1)} m", ),
-          _buildRow("Tubo de esgoto de PVC diâmetro 40 mm","${calc.tuboEsgoto40.toStringAsFixed(1)} m", ),
-          _buildRow("Tampão PVC 100mm", "${calc.tampaoPVC100} un"),
-          _buildRow("Tampão PVC 75mm", "${calc.tampaoPVC75} un"),
-          _buildRow("Curva esgoto 90° de 100mm", "${calc.curvaEsgoto90.toStringAsFixed(0)} un", obs: "Verificar será precisa de conexões onde a BET será instalada",),
-          _buildRow("Joelho esgoto 45° de 100mm", "${calc.joelhoEsgoto45.toStringAsFixed(0)} un", obs: "Verificar será precisa de conexões onde a BET será instalada",),
-          _buildRow("Luva esgoto 100mm", "${calc.luvaEsgoto100} un"),
-          _buildRow("Tê esgoto 100mm", "${calc.tePVC100} un"),
-
-
-          const SizedBox(height: 10),
-
-          // LISTA EXPANSORA
-          _buildMenuExpansivo(
-            titulo: "Sugestões e prevenções",
-            itens: [
-          _buildRow("tubo de Esgoto PVC 100MM", "${calc.tuboEsgotoSugestao(distancia).toStringAsFixed(1)} m", obs: "Seugestão para conexão interna..."),
-          _buildRow("Conexões 100mm", "Luva, Tê e Tampão"),
-            ],
+          _buildRow(
+            "Tubo de esgoto de PVC diâmetro 100 mm",
+            "${calc.tuboEsgoto100.toStringAsFixed(1)} m",
           ),
+          _buildRow(
+            "Tubo de esgoto de PVC diâmetro 75 mm",
+            "${calc.tuboEsgoto75.toStringAsFixed(1)} m",
+          ),
+          _buildRow(
+            "Tubo de esgoto de PVC diâmetro 40 mm",
+            "${calc.tuboEsgoto40.toStringAsFixed(1)} m",
+          ),
+          _buildRow("Tampão PVC 100mm", "${calc.tampaoPVC100} unid."),
+          _buildRow("Tampão PVC 75mm", "${calc.tampaoPVC75} unid."),
+          _buildRow(
+            "Curva esgoto 90° de 100mm",
+            "${calc.curvaEsgoto90.toStringAsFixed(0)} unid.",
+            obs: " Observar se será preciso conexões onde a BET será instalada",
+          ),
+          _buildRow(
+            "Joelho esgoto 45° de 100mm",
+            "${calc.joelhoEsgoto45.toStringAsFixed(0)} unid.",
+            obs: " Observar se será preciso conexões onde a BET será instalada",
+          ),
+          _buildRow("Luva esgoto 100mm", "${calc.luvaEsgoto100} unid."),
+          _buildRow("Tê esgoto 100mm", "${calc.tePVC100} unid."),
+          const SizedBox(height: 5),
         ], // Fecha children
       ), // Fecha Column
     ); // Fecha SingleChildScrollView
@@ -496,12 +653,12 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
-                child: Text(label, style: const TextStyle(fontSize: 16)),
+                child: Text(label, style: const TextStyle(fontSize: 18)),
               ),
               Text(
                 value,
                 style: const TextStyle(
-                  fontSize: 16,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
               ),

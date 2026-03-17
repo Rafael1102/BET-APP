@@ -1,58 +1,43 @@
 import 'dart:math';
 class CalculosBET {
-  final int n; // Número de moradores
-
+  final int n; 
   CalculosBET(this.n);
 
-  // =============================================================
   // CONSTANTES E DIMENSÕES (Do Tijolo 6 Furos)
-  // =============================================================
   // Descrição na tabela: "tijolo 6F nas dimensões 9x19x14 cm"
   double get tijoloAltura => 0.14;      // 14 cm
   double get tijoloComprimento => 0.19; // 19 cm
   double get tijoloLargura => 0.09;     // 9 cm
 
-  // =============================================================
   // SEÇÃO 1: DADOS GERAIS DA BET QUADRADA DE ALVENARIA
-  // =============================================================
-
-  // 1. Volume da BET (m3)
-  // Tabela: "1,8m3/morador (V = A x C x L)"
+  // Tabela: "1,8m3/morador (V = A x C x L)" Volume da BET (m3)
   double get volumeDaBet => n * 1.8;
 
-  // 2. Altura da BET (m)
-  // Tabela: "valor fixo"
+  // Tabela: "valor fixo" Altura da BET (m)
   double get alturaDaBet => 1.5;
 
-  // 3. Largura da BET (m)
-  // Tabela: "V = 1,5 x 2L x L" -> V = 3L² -> L = raiz(V/3)
+  // Largura da BET (m) Tabela: "V = 1,5 x 2L x L" -> V = 3L² -> L = raiz(V/3)
   double get larguraDaBet => sqrt(volumeDaBet / 3);
 
-  // 4. Comprimento da BET (m)
-  // Tabela: "Comprimento = 2L (L = Largura)"
+  // Comprimento da BET (m) Tabela: "Comprimento = 2L (L = Largura)"
   double get comprimentoDaBet => 2 * larguraDaBet;
 
-  // 5. Área da alvenaria da BET (m2) (paredes internas)
-  // Tabela: "2*(C4*C5)+2*(C4*C6)" -> 2*(Altura*Comp) + 2*(Altura*Larg)
+  //Área da alvenaria da BET (m2) (paredes internas) Tabela: "2*(C4*C5)+2*(C4*C6)" -> 2*(Altura*Comp) + 2*(Altura*Larg)
   double get areaAlvenariaBetParedesInternas =>
       (2 * (alturaDaBet * comprimentoDaBet)) + (2 * (alturaDaBet * larguraDaBet));
 
-  // 6. Altura do canteiro (m)
-  // Tabela: "3*0,14" (considerando tijolo 6F nas dimensões 9x19x14 cm)
+  //  Altura do canteiro (m) Tabela: "3*0,14" (considerando tijolo 6F nas dimensões 9x19x14 cm)
   double get alturaDoCanteiro => 3 * tijoloAltura;
 
-  // 7. Área da alvenaria do canteiro (m2)
-  // Tabela: "2*(C8*C5)+2*(C8*C6)" -> 2*(AlturaCanteiro*Comp) + 2*(AlturaCanteiro*Larg)
+  //Área da alvenaria do canteiro (m2) Tabela: "2*(C8*C5)+2*(C8*C6)" -> 2*(AlturaCanteiro*Comp) + 2*(AlturaCanteiro*Larg)
   double get areaAlvenariaDoCanteiro =>
       (2 * (alturaDoCanteiro * comprimentoDaBet)) + (2 * (alturaDoCanteiro * larguraDaBet));
 
-  // 8. Área da alvenaria da BET + canteiro (m2)
-  // Tabela: "Área da alvenaria da BET (m2) + Área da alvenaria do canteiro (m2)"
+  // Área da alvenaria da BET + canteiro (m2) Tabela: "Área da alvenaria da BET (m2) + Área da alvenaria do canteiro (m2)"
   double get areaAlvenariaBetMaisCanteiro =>
       areaAlvenariaBetParedesInternas + areaAlvenariaDoCanteiro;
 
-  // 9. Área do piso da BET (m2)
-  // Obs: Tabela diz "Comprimento + Largura", mas o resultado matemático 3,6 exige Multiplicação.
+  // Área do piso da BET (m2) Obs: Tabela diz "Comprimento + Largura", mas o resultado matemático 3,6 exige Multiplicação.
   // Mantendo a lógica matemática correta da engenharia (Área = C x L).
   double get areaDoPisoDaBet => comprimentoDaBet * larguraDaBet;
 
@@ -62,14 +47,13 @@ class CalculosBET {
   double get alturaCamadaAreia => 0.3;   // "Altura da camada de areia"
   double get alturaCamadaSolo => 0.3;    // "Altura da camada de substrato/solo"
 
-  // 10. Volume da câmara de pneu (m3)
-  // Tabela: "(PI()*((0,6/2)^2))*C5" -> PI * (0.3^2) * Comprimento
+  // Volume da câmara de pneu (m3) Tabela: "(PI()*((0,6/2)^2))*C5" -> PI * (0.3^2) * Comprimento
   double get volumeCamaraDePneu => pi * pow((alturaCamadaEntulho / 2), 2) * comprimentoDaBet;
 
 
-  // SEÇÃO 2: MATERIAIS NECESSÁRIOS
+  //MATERIAIS NECESSÁRIOS
 
-  // 11. Areia média (m3)
+  // Areia média (m3)
   // Tabela: "considerando 10% de perda para alvenaria"
   // Cálculo reverso baseado no output 1.65 para 3 moradores:
   // Volume Camada Areia (Piso * 0.3) + Volume Argamassa Alvenaria + Perda
@@ -92,14 +76,14 @@ class CalculosBET {
   double get cimentoKg => (cimentoSacos * 50.0); // Convertendo sacos para kg (1 saco = 50kg)
 
   // 15. Traço para reboco das paredes
-  String get tracoReboco => "01:03 (Cimento : Areia)";
+  String get tracoReboco => "1:3 (Cimento : Areia)";
 
   // 16. Aditivo Impermeabilizante (L)
   // Tabela: "0,2 L = 50 kg de cimento" (Ou seja, 0.2L por saco)
   double get aditivoImpermeabilizante => cimentoSacos * 0.2;
 
   // 17. Traço para piso
-  String get tracoPiso => "01:02:03 (Cimento : Areia : Seixo)";
+  String get tracoPiso => "1:2:3 (Cimento : Areia : Seixo)";
 
   // 18. Pedra brita ou seixo grosso (m3)
   double get pedraBritaOuSeixo => (areaDoPisoDaBet * alturaCamadaBrita) + (areaDoPisoDaBet * 0.04);
