@@ -49,16 +49,16 @@ class GeradorPDF {
       );
     }
 
-    // Adiciona uma página ao PDF
     doc.addPage(
-      pw.Page(
+      pw.MultiPage(
         pageFormat: PdfPageFormat.a4,
         margin: const pw.EdgeInsets.all(32),
-        build: (pw.Context context) {
+        
+        // --- CABEÇALHO ---
+        header: (pw.Context context) {
           return pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
-              // CABEÇALHO DO DOCUMENTO
               pw.Header(
                 level: 0,
                 child: pw.Row(
@@ -78,178 +78,176 @@ class GeradorPDF {
                 "Moradores: ${calc.n} | Volume da BET: ${calc.volumeDaBet.toStringAsFixed(2)} m³",
               ),
               pw.Divider(color: PdfColors.green),
+            ],
+          );
+        },
 
-              // 1. CONSTRUÇÃO
-              buildSectionHeader(
-                "1. Dados Gerais da BET Quadrada de Alvenaria",
-              ),
-              buildItemRow(
-                "Volume da BET",
-                "${calc.volumeDaBet.toStringAsFixed(2)} m³",
-              ),
-              buildItemRow(
-                "Altura da Bet",
-                "${calc.alturaDaBet.toStringAsFixed(1)} m",
-              ),
-              buildItemRow(
-                "Comprimento da Bet",
-                "${calc.comprimentoDaBet.toStringAsFixed(1)} m",
-              ),
-              buildItemRow(
-                "Largura da Bet",
-                "${calc.larguraDaBet.toStringAsFixed(1)} m",
-              ),
-              buildItemRow(
-                "Área da Alvenaria da BET paredes internas",
-                "${calc.areaAlvenariaBetParedesInternas.toStringAsFixed(2)} m²",
-              ),
-              buildItemRow(
-                "Altura do canteiro",
-                "${calc.alturaDoCanteiro.toStringAsFixed(1)} m",
-              ),
-              buildItemRow(
-                "Área da alvenaria do canteiro",
-                "${calc.areaAlvenariaDoCanteiro.toStringAsFixed(2)} m²",
-              ),
-              buildItemRow(
-                "Área da alvenaria da BET + canteiro",
-                "${calc.areaAlvenariaBetMaisCanteiro.toStringAsFixed(2)} m²",
-              ),
-              buildItemRow(
-                "Área do piso da BET",
-                "${calc.areaDoPisoDaBet.toStringAsFixed(2)} m²",
-              ),
-              buildItemRow(
-                "Altura de camada de entulho",
-                "${calc.alturaCamadaEntulho.toStringAsFixed(1)} m",
-              ),
-              buildItemRow(
-                "Altura da camada de seixo ou brita",
-                "${calc.alturaCamadaBrita.toStringAsFixed(1)} m",
-              ),
-              buildItemRow(
-                "Altura da camada de areia",
-                "${calc.alturaCamadaAreia.toStringAsFixed(1)} m",
-              ),
-              buildItemRow(
-                "Altura da camada de solo",
-                "${calc.alturaCamadaSolo.toStringAsFixed(1)} m",
-              ),
-              buildItemRow(
-                "Volume da câmara de pneu",
-                "${calc.volumeCamaraDePneu.toStringAsFixed(2)} m³",
-              ),
-
-              // 2. TRAÇOS
-              buildSectionHeader(
-                "2. Materiais necessários para a contrução e preenchimento da BET",
-              ),
-              buildItemRow(
-                "Areia média considerando 10% de perda",
-                "${calc.areiaMedia.toStringAsFixed(2)} m³",
-              ),
-
-              buildItemRow(
-                "Cimento, considerando 10% de perda",
-                "${calc.cimentoComPerda.toStringAsFixed(2)} m³",
-              ),
-
-              buildItemRow(
-                "Cimento considerando tijolo 6 furos (9X19X14CM) e 10% de perda",
-                "${calc.cimentoSacoComPerda.toStringAsFixed(2)} m³",
-              ),
-
-              buildItemRow(
-                "tijolo 6 furos considerando (9X19X14CM) ",
-                "${calc.tijolos6Furos} unid.",
-              ),
-
-              buildItemRow(
-                "Traço para reboco da paredes",
-                "${calc.tracoReboco}",
-              ),
-
-              buildItemRow(
-                "Aditivo Impermeabilizante considerando 10% de perda",
-                "${calc.aditivoImpermeabilizante.toStringAsFixed(2)} L",
-              ),
-
-              buildItemRow("traço para piso", "${calc.tracoPiso}"),
-
-              buildItemRow(
-                "Pedra brita ou seixo grosso considerando 10% de perda",
-                "${calc.pedraBritaOuSeixo.toStringAsFixed(2)} m³",
-              ),
-
-              buildItemRow(
-                "Pneu inervivel, aro 13 a 16",
-                "${calc.pneuInservivel} unid.",
-              ),
-
-              buildItemRow(
-                "Entulho, pedras grndes, cacos, restos da construção",
-                "${calc.entulhoPedras.toStringAsFixed(2)} m³",
-              ),
-
-              buildItemRow(
-                "Terra preta/ Solo/ Substrato",
-                "${calc.terraPretaSolo.toStringAsFixed(2)} m³",
-              ),
-
-              buildItemRow("Mudas de Bananeira", "${calc.mudaBananeira} unid."),
-
-              buildItemRow(
-                "Adubo Diverso",
-                "${calc.aduboDiverso.toStringAsFixed(1)} L",
-              ),
-
-              // 4. TUBULAÇÃO
-              buildSectionHeader("3. Tubulações de Esgoto"),
-              buildItemRow(
-                "Tubo PVC 100mm",
-                "${calc.curvaEsgoto90.toStringAsFixed(0)} un",
-              ),
-              buildItemRow(
-                "Tubo PVC 75mm",
-                "${calc.tuboEsgoto75.toStringAsFixed(1)} m",
-              ),
-              buildItemRow(
-                "Tubo PVC 40mm",
-                "${calc.tuboEsgoto40.toStringAsFixed(1)} m",
-              ),
-              buildItemRow("Tampão PVC 100mm", "${calc.tampaoPVC100} unid."),
-              buildItemRow("Tampão PVC 75mm", "${calc.tampaoPVC75} unid."),
-              buildItemRow(
-                "Curva Esgoto 90º de 100mm",
-                "${calc.curvaEsgoto90.toStringAsFixed(1)} unid.",
-              ),
-              buildItemRow("Joelho Esgoto 45º diametro 100mm", "${calc.joelhoEsgoto45.toStringAsFixed(1)} unid."),
-              buildItemRow("Luva Esgoto 100mm", "${calc.luvaEsgoto100} unid."),
-              buildItemRow("Tê PVC 100mm", "${calc.tePVC100} unid."),
-              
-              pw.SizedBox(height: 5),
+        // --- RODAPÉ ---
+        footer: (pw.Context context) {
+          return pw.Row(
+            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+            children: [
               pw.Text(
-                "*Adquirir conexões (Luvas, Tês, Joelhos) conforme a instalação local.",
-                style: pw.TextStyle(
-                  fontSize: 10,
-                  color: PdfColors.grey700,
-                  fontStyle: pw.FontStyle.italic,
-                ),
+                "Gerado pelo Aplicativo BET",
+                style: pw.TextStyle(fontSize: 10, color: PdfColors.grey),
               ),
-
-              pw.Spacer(),
-              pw.Footer(
-                leading: pw.Text(
-                  "Gerado pelo Aplicativo BET",
-                  style: pw.TextStyle(fontSize: 10, color: PdfColors.grey),
-                ),
-                trailing: pw.Text(
-                  "Página 1 de 1",
-                  style: pw.TextStyle(fontSize: 10, color: PdfColors.grey),
-                ),
+              pw.Text(
+                "Página ${context.pageNumber} de ${context.pagesCount}",
+                style: pw.TextStyle(fontSize: 10, color: PdfColors.grey),
               ),
             ],
           );
+        },
+
+        // --- CORPO DO DOCUMENTO  ---
+        build: (pw.Context context) {
+          return [
+            // 1. CONSTRUÇÃO
+            buildSectionHeader(
+              "1. Dados Gerais da BET Quadrada de Alvenaria",
+            ),
+            buildItemRow(
+              "Volume da BET",
+              "${calc.volumeDaBet.toStringAsFixed(2)} m³",
+            ),
+            buildItemRow(
+              "Altura da Bet",
+              "${calc.alturaDaBet.toStringAsFixed(1)} m",
+            ),
+            buildItemRow(
+              "Comprimento da Bet",
+              "${calc.comprimentoDaBet.toStringAsFixed(1)} m",
+            ),
+            buildItemRow(
+              "Largura da Bet",
+              "${calc.larguraDaBet.toStringAsFixed(1)} m",
+            ),
+            buildItemRow(
+              "Área da Alvenaria da BET paredes internas",
+              "${calc.areaAlvenariaBetParedesInternas.toStringAsFixed(2)} m²",
+            ),
+            buildItemRow(
+              "Altura do canteiro",
+              "${calc.alturaDoCanteiro.toStringAsFixed(1)} m",
+            ),
+            buildItemRow(
+              "Área da alvenaria do canteiro",
+              "${calc.areaAlvenariaDoCanteiro.toStringAsFixed(2)} m²",
+            ),
+            buildItemRow(
+              "Área da alvenaria da BET + canteiro",
+              "${calc.areaAlvenariaBetMaisCanteiro.toStringAsFixed(2)} m²",
+            ),
+            buildItemRow(
+              "Área do piso da BET",
+              "${calc.areaDoPisoDaBet.toStringAsFixed(2)} m²",
+            ),
+            buildItemRow(
+              "Altura de camada de entulho",
+              "${calc.alturaCamadaEntulho.toStringAsFixed(1)} m",
+            ),
+            buildItemRow(
+              "Altura da camada de seixo ou brita",
+              "${calc.alturaCamadaBrita.toStringAsFixed(1)} m",
+            ),
+            buildItemRow(
+              "Altura da camada de areia",
+              "${calc.alturaCamadaAreia.toStringAsFixed(1)} m",
+            ),
+            buildItemRow(
+              "Altura da camada de solo",
+              "${calc.alturaCamadaSolo.toStringAsFixed(1)} m",
+            ),
+            buildItemRow(
+              "Volume da câmara de pneu",
+              "${calc.volumeCamaraDePneu.toStringAsFixed(2)} m³",
+            ),
+
+            // 2. TRAÇOS
+            buildSectionHeader(
+              "2. Materiais necessários para a contrução e preenchimento da BET",
+            ),
+            buildItemRow(
+              "Areia média considerando 10% de perda",
+              "${calc.areiaMedia.toStringAsFixed(2)} m³",
+            ),
+            buildItemRow(
+              "Cimento, considerando 10% de perda",
+              "${calc.cimentoComPerda.toStringAsFixed(2)} m³",
+            ),
+            buildItemRow(
+              "Cimento considerando tijolo 6 furos (9X19X14CM) e 10% de perda",
+              "${calc.cimentoSacoComPerda.toStringAsFixed(2)} m³",
+            ),
+            buildItemRow(
+              "Tijolo 6 furos considerando (9X19X14CM) ",
+              "${calc.tijolos6Furos} unid.",
+            ),
+            buildItemRow(
+              "Traço para reboco da paredes",
+              calc.tracoReboco,
+            ),
+            buildItemRow(
+              "Aditivo Impermeabilizante considerando 10% de perda",
+              "${calc.aditivoImpermeabilizante.toStringAsFixed(2)} L",
+            ),
+            buildItemRow("Traço para piso", calc.tracoPiso),
+            buildItemRow(
+              "Pedra brita ou seixo grosso considerando 10% de perda",
+              "${calc.pedraBritaOuSeixo.toStringAsFixed(2)} m³",
+            ),
+            buildItemRow(
+              "Pneu inervivel, aro 13 a 16",
+              "${calc.pneuInservivel} unid.",
+            ),
+            buildItemRow(
+              "Entulho, pedras grandes, cacos, restos da construção",
+              "${calc.entulhoPedras.toStringAsFixed(2)} m³",
+            ),
+            buildItemRow(
+              "Terra preta/ Solo/ Substrato",
+              "${calc.terraPretaSolo.toStringAsFixed(2)} m³",
+            ),
+            buildItemRow("Mudas de Bananeira", "${calc.mudaBananeira} unid."),
+            buildItemRow(
+              "Adubo Diverso",
+              "${calc.aduboDiverso.toStringAsFixed(1)} L",
+            ),
+
+            // 4. TUBULAÇÃO
+            buildSectionHeader("3. Tubulações de Esgoto"),
+            buildItemRow(
+              "Tubo PVC 100mm",
+              "${calc.tuboEsgoto100.toStringAsFixed(0)} un",
+            ),
+            buildItemRow(
+              "Tubo PVC 75mm",
+              "${calc.tuboEsgoto75.toStringAsFixed(1)} m",
+            ),
+            buildItemRow(
+              "Tubo PVC 40mm",
+              "${calc.tuboEsgoto40.toStringAsFixed(1)} m",
+            ),
+            buildItemRow("Tampão PVC 100mm", "${calc.tampaoPVC100} unid."),
+            buildItemRow("Tampão PVC 75mm", "${calc.tampaoPVC75} unid."),
+            buildItemRow(
+              "Curva Esgoto 90º de 100mm",
+              "Depende da instalação local",
+            ),
+            buildItemRow("Joelho Esgoto 45º diâmetro 100mm", "Depende da instalação local"),
+            buildItemRow("Luva Esgoto 100mm", "${calc.luvaEsgoto100} unid."),
+            buildItemRow("Tê PVC 100mm", "${calc.tePVC100} unid."),
+            
+            pw.SizedBox(height: 5),
+            pw.Text(
+              "*Adquirir conexões (Luvas, Tês, Joelhos) conforme a instalação local.",
+              style: pw.TextStyle(
+                fontSize: 10,
+                color: PdfColors.grey700,
+                fontStyle: pw.FontStyle.italic,
+              ),
+            ),
+          ];
         },
       ),
     );

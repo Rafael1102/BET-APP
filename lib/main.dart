@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:app_bet/controller/calculadora_bet.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:app_bet/utils/gerador_pdf.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 void main() => runApp(const ProjetoBET());
@@ -368,7 +367,7 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
                   style: TextStyle(
                     color: corDestaque,
                     fontWeight: FontWeight.bold,
-                    fontSize: 14,
+                    fontSize: 20,
                   ),
                 ),
                 ClipRRect(
@@ -398,12 +397,12 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
 
           // SEÇÃO 1: DADOS GERAIS
           _buildSectionHeader("Dados Gerais da BET"),
-          _buildRow(
+         /* _buildRow(
             "Comunidade / Local",
             _comunidadeController.text.isEmpty
                 ? "Não informado"
                 : _comunidadeController.text,
-          ),
+          ),*/
 
           _buildRow(
             "Volume da BET",
