@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.example.app_bet"
-    compileSdk = 34 
+    compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
