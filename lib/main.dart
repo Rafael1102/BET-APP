@@ -3,6 +3,9 @@ import 'package:app_bet/controller/calculadora_bet.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:app_bet/utils/gerador_pdf.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'dart:async';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:app_bet/tela_consentimento.dart';
 
 void main() => runApp(const ProjetoBET());
 
@@ -36,7 +39,7 @@ class TelaPrincipal extends StatefulWidget {
   State<TelaPrincipal> createState() => _TelaPrincipalState();
 }
 
-class _TelaPrincipalState extends State<TelaPrincipal> {
+  class _TelaPrincipalState extends State<TelaPrincipal> {
   int _indiceAtual = 0; // Controla qual aba está visível
 
   // Controladores de texto
@@ -46,6 +49,53 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
 
   bool? _temAgua;
   bool _calculoRealizado = false;
+
+  bool _exibirPopup = false;
+  bool _pesquisaFinalizada = false;
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _verificarStatusPesquisa();
+  }
+
+  Future<void> _verificarStatusPesquisa() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    await prefs.remove('pesquisa_finalizada'); 
+    // ------------------------------------
+    _pesquisaFinalizada = prefs.getBool('pesquisa_finalizada') ?? false;
+
+    if (!_pesquisaFinalizada) {
+      setState(() => _exibirPopup = true);
+      
+      // O pop-up desaparece automaticamente ao fim de 2 minutos
+      _timer = Timer(const Duration(minutes: 2), () {
+        if (mounted) {
+          setState(() => _exibirPopup = false);
+        }
+      });
+    }
+  }
+
+  Future<void> _marcarComoRespondido() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('pesquisa_finalizada', true);
+    setState(() {
+      _exibirPopup = false;
+      _pesquisaFinalizada = true;
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _comunidadeController.dispose();
+    _moradoresController.dispose();
+    _distanciaController.dispose();
+    super.dispose();
+  }
 
   Widget _buildMenuExpansivo({
     required String titulo,
@@ -147,7 +197,68 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
         ),
       ),
       // IndexedStack preserva os dados digitados ao trocar de aba
-      body: IndexedStack(index: _indiceAtual, children: telas),
+      body: Stack(
+        children: [
+          // 1. O SEU APLICATIVO NORMAL FICA NO FUNDO
+          IndexedStack(index: _indiceAtual, children: telas),
+
+          // 2. O POP-UP FICA POR CIMA (Se a variável for verdadeira)
+          if (_exibirPopup)
+            Positioned(
+              top: 20,
+              left: 20,
+              right: 20,
+              child: Card(
+                color: Colors.green[50],
+                elevation: 10,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text(
+                        "A sua opinião é importante!",
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        "Ajude a nossa pesquisa de TCC avaliando o aplicativo.",
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          TextButton(
+                            onPressed: _marcarComoRespondido,
+                            child: Text("JÁ RESPONDI", style: TextStyle(color: Colors.grey[700])),
+                          ),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green[800], 
+                              foregroundColor: Colors.white
+                            ),
+                            onPressed: () {
+                              _marcarComoRespondido(); // Grava que ele aceitou
+                              
+                              // Navega para a sua Tela de Consentimento
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => const TelaConsentimento()),
+                              );
+                            },
+                            child: const Text("RESPONDER"),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _indiceAtual,
         onDestinationSelected: (index) {

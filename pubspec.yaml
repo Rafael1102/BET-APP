@@ -39,6 +39,9 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter_speed_dial: ^7.0.0
   share_plus: ^8.0.2
+  shared_preferences: ^2.5.5
+  flutter_native_splash: ^2.4.7
+  url_launcher: ^6.3.2
 
 dev_dependencies:
   flutter_test:
@@ -93,3 +96,10 @@ flutter:
   # To add custom fonts to your application, add a fonts section here,
   # in this "flutter" section. Each entry in this list should have a
   # "family" key with the font family name,
+
+flutter_native_splash:
+  color: "#ffffff"
+  image: assets/icon.png
+  android_12:
+    image: assets/icon.png
+    icon_background_color: "#ffffff"
