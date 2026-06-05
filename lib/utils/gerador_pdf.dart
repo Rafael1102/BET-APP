@@ -91,31 +91,29 @@ class GeradorPDF {
           return pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
-              if (logoImage != null)
-                pw.Center(
-                  child: pw.Padding(
-                    padding: const pw.EdgeInsets.only(bottom: 10),
-                    child: pw.Image(logoImage, height: 60),
-                  ),
-                ),
               pw.Header(
                 level: 0,
                 child: pw.Row(
-                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: pw.CrossAxisAlignment.center,
+                  crossAxisAlignment: pw.CrossAxisAlignment.end,
                   children: [
-                    pw.Row(
-                      crossAxisAlignment: pw.CrossAxisAlignment.center,
+                    pw.Expanded(child: pw.SizedBox()), // Espaço vazio na esquerda para equilibrar
+                    pw.Column(
+                      mainAxisSize: pw.MainAxisSize.min,
                       children: [
                         if (logoImage != null)
                           pw.Padding(
-                            padding: const pw.EdgeInsets.only(right: 10),
-                            child: pw.Image(logoImage, width: 35, height: 35),
+                            padding: const pw.EdgeInsets.only(bottom: 8),
+                            child: pw.Image(logoImage, height: 60),
                           ),
+                        pw.Text("PROJETO BET", style: titleStyle),
                       ],
                     ),
-                    pw.Text("PROJETO BET", style: titleStyle),
-                    pw.Text("Lista de Materiais", style: baseStyle),
+                    pw.Expanded(
+                      child: pw.Align(
+                        alignment: pw.Alignment.bottomRight,
+                        child: pw.Text("Lista de Materiais", style: baseStyle),
+                      ),
+                    ),
                   ],
                 ),
               ),
