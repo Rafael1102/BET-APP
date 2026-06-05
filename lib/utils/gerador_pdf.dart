@@ -209,24 +209,24 @@ class GeradorPDF {
             // 2. PAREDES
             buildSectionHeader("2. Materiais para construção das paredes da BET"),
             buildItemRow("Areia média", "${calc.areiaMedia.toStringAsFixed(2)} m³"),
-            buildItemRow("Cimento (Kg)", "${calc.cimentoKg.toStringAsFixed(2)} kg"),
-            buildItemRow("Cimento (Sacos)", "${calc.cimentoSacos.toStringAsFixed(2)} sacos"),
+            buildItemRow("Cimento", "${calc.cimentoKg.toStringAsFixed(2)} kg"),
+            buildItemRow("Cimento", "${calc.cimentoSacos.toStringAsFixed(2)} sacos"),
             buildItemRow("Tijolo 6 furos", "${calc.tijolos6Furos} unid."),
 
             // 3. REBOCO
             buildSectionHeader("3. Materiais para reboco na parede da BET"),
             buildItemRow("Aditivo Impermeabilizante", "${calc.aditivoImpermeabilizante.toStringAsFixed(1)} L"),
             buildItemRow("Areia média", "${calc.areiaMedia.toStringAsFixed(3)} m³"),
-            buildItemRow("Cimento (Kg)", "${calc.cimentoComPerda.toStringAsFixed(2)} kg"),
-            buildItemRow("Cimento (Sacos)", "${calc.cimentoSacoComPerda.toStringAsFixed(2)} sacos"),
+            buildItemRow("Cimento", "${calc.cimentoComPerda.toStringAsFixed(2)} kg"),
+            buildItemRow("Cimento", "${calc.cimentoSacoComPerda.toStringAsFixed(2)} sacos"),
             buildItemRow("Traço para reboco da paredes", calc.tracoReboco),
 
             // 4. PISO
             buildSectionHeader("4. Material para construção do piso da BET"),
             buildItemRow("Aditivo Impermeabilizante", "${calc.aditivoImpermeabilizante.toStringAsFixed(1)} L"),
             buildItemRow("Areia", "${calc.areiaParaPiso.toStringAsFixed(2)} m³"),
-            buildItemRow("Cimento (Kg)", "${calc.cimentoKgPerdaPiso} kg"),
-            buildItemRow("Cimento (Sacos)", "${calc.cimentoSacoPerdaPiso} sacos"),
+            buildItemRow("Cimento", "${calc.cimentoKgPerdaPiso} kg"),
+            buildItemRow("Cimento", "${calc.cimentoSacoPerdaPiso} sacos"),
             buildItemRow("Pedra Brita/Seixo", "${calc.pedraBritaOuSeixo.toStringAsFixed(2)} m³"),
             buildItemRow("Traço para piso", calc.tracoPiso),
 

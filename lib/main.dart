@@ -582,9 +582,9 @@ class TelaPrincipal extends StatefulWidget {
           // SEÇÃO 2: MATERIAIS
           _buildSectionHeader("Materiais para construção das paredes da BET"),
           _buildRow("Areia Média", "${calc.areiaMedia.toStringAsFixed(2)} m³"),
-          _buildRow("Cimento (Kg)", "${calc.cimentoKg.toStringAsFixed(2)} kg"),
+          _buildRow("Cimento", "${calc.cimentoKg.toStringAsFixed(2)} kg"),
           _buildRow(
-            "Cimento (Sacos)",
+            "Cimento",
             "${calc.cimentoSacos.toStringAsFixed(2)} sacos",
           ),
           _buildRow("Tijolos 6 furos", "${calc.tijolos6Furos} unid."),
@@ -602,11 +602,11 @@ class TelaPrincipal extends StatefulWidget {
                 "${calc.areiaMedia.toStringAsFixed(3)} m³",
               ),
               _buildRow(
-                "Cimento (Kg)",
+                "Cimento",
                 "${calc.cimentoComPerda.toStringAsFixed(2)} kg",
               ),
               _buildRow(
-                "Cimento (Sacos)",
+                "Cimento",
                 "${calc.cimentoSacoComPerda.toStringAsFixed(2)} sacos",
               ),
               _buildMenuExpansivo(
@@ -624,11 +624,11 @@ class TelaPrincipal extends StatefulWidget {
               ),
               _buildRow("Areia", "${calc.areiaParaPiso.toStringAsFixed(2)} m³"),
               _buildRow(
-                "Cimento (kg)",
+                "Cimento",
                 "${calc.cimentoKgPerdaPiso.toStringAsFixed(2)} kg",
               ),
               _buildRow(
-                "Cimento (sacos)",
+                "Cimento",
                 "${calc.cimentoSacoPerdaPiso} sacos",
               ),
               _buildRow(
