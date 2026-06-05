@@ -92,10 +92,10 @@ class CalculosBET {
   double get areiaParaPiso => ((areaDoPisoDaBet * 0.023)*1.1);
 
   // cimento saco para piso
-  double get cimentoSacoPerdaPiso => ((areaDoPisoDaBet * 0.316 )* 1.1);
+  int get cimentoSacoPerdaPiso => ((areaDoPisoDaBet * 0.316) * 1.1).ceil();
 
   // cimento kg para piso
-  double get cimentoKgPerdaPiso => (cimentoSacoPerdaPiso * 50);
+  int get cimentoKgPerdaPiso => cimentoSacoPerdaPiso * 50;
 
   // areia média
   double get areiaMediaPreenchimento => (0.3 * areaDoPisoDaBet );
@@ -131,10 +131,16 @@ class CalculosBET {
   int get tePVC100 => 1;
 
   // Tubo 100mm
-// Tubo PVC 100mm: Distância da BET até a casa + 2m para conexões
+// Tubo PVC 100mm: Distância da BET até a casa + 2m
   double tuboEsgoto100(double distanciaCasa) {
     return distanciaCasa + 2.0; 
   }
-  double get tuboEsgoto75 => 1.0; //valor fixo
-  double get tuboEsgoto40 => 3.0; //valor fixo
+
+  // Quantidade de barras de 6 metros
+  int tuboEsgoto100Barras(double distanciaCasa) {
+    return (tuboEsgoto100(distanciaCasa) / 6.0).ceil(); 
+  }
+
+  int get tuboEsgoto75 => 1; //valor fixo
+  int get tuboEsgoto40 => 3; //valor fixo
 }

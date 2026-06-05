@@ -70,8 +70,8 @@ class TelaPrincipal extends StatefulWidget {
     if (!_pesquisaFinalizada) {
       setState(() => _exibirPopup = true);
       
-      // O pop-up desaparece automaticamente ao fim de 2 minutos
-      _timer = Timer(const Duration(minutes: 2), () {
+      // O pop-up desaparece automaticamente ao fim de 1 minutos
+      _timer = Timer(const Duration(minutes: 1), () {
         if (mounted) {
           setState(() => _exibirPopup = false);
         }
@@ -379,10 +379,10 @@ class TelaPrincipal extends StatefulWidget {
                   controller: _distanciaController,
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
-                    labelText: "Distância da casa (metros)",
+                    labelText: "Distância até a casa (metros)",
                     prefixIcon: Icon(Icons.straighten),
                     border: OutlineInputBorder(),
-                    helperText: "Necessário para calcular tubulação",
+                    helperText: "Necessário para calcular a tubulação",
                   ),
                 ),
               ],
@@ -537,9 +537,8 @@ class TelaPrincipal extends StatefulWidget {
             "${calc.areaAlvenariaBetMaisCanteiro.toStringAsFixed(1)} m²",
           ),
 
-          // (Lista Expansora)
           _buildMenuExpansivo(
-            titulo: "Ver Detalhes",
+            titulo: "Ver Mais Detalhes",
             itens: [
               _buildRow(
                 "Área alvenaria BET (paredes int.)",
@@ -581,7 +580,7 @@ class TelaPrincipal extends StatefulWidget {
           ),
 
           // SEÇÃO 2: MATERIAIS
-          _buildSectionHeader("Construção das paredes da BET"),
+          _buildSectionHeader("Materiais para construção das paredes da BET"),
           _buildRow("Areia Média", "${calc.areiaMedia.toStringAsFixed(2)} m³"),
           _buildRow("Cimento (Kg)", "${calc.cimentoKg.toStringAsFixed(2)} kg"),
           _buildRow(
@@ -591,14 +590,10 @@ class TelaPrincipal extends StatefulWidget {
           _buildRow("Tijolos 6 furos", "${calc.tijolos6Furos} unid."),
 
           // SEÇÃO 3: MATERIAIS DA PAREDE
-          _buildSectionHeader("Para reboco na parede da BET"),
+          _buildSectionHeader("Materiais para reboco na parede da BET"),
 
           // LISTA EXPANSORA
-          _buildRow("Traço", calc.tracoReboco),
-          _buildMenuExpansivo(
-            titulo: "Materiais",
-            itens: [
-              _buildRow(
+          _buildRow(
                 "Aditivo Impermeabilizante",
                 "${calc.aditivoImpermeabilizante.toStringAsFixed(1)} L",
               ),
@@ -612,20 +607,18 @@ class TelaPrincipal extends StatefulWidget {
               ),
               _buildRow(
                 "Cimento (Sacos)",
-                "${(calc.cimentoSacoComPerda).toStringAsFixed(2)} sacos",
+                "${calc.cimentoSacoComPerda.toStringAsFixed(2)} sacos",
               ),
+              _buildMenuExpansivo(
+               titulo: "Quant. traço",
+               itens: [
+          _buildRow("Traço", calc.tracoReboco),
             ],
           ),
 
           // SEÇÃO 4: MATERIAIS DO PISO
-          _buildSectionHeader("Para construção do piso da BET"),
-          _buildRow("Traço", calc.tracoPiso),
-
-          // LISTA EXPANSORA
-          _buildMenuExpansivo(
-            titulo: "Materiais",
-            itens: [
-              _buildRow(
+          _buildSectionHeader("Material para construção do piso da BET"),
+          _buildRow(
                 "Aditivo Impermeabilizante",
                 "${calc.aditivoImpermeabilizante.toStringAsFixed(1)} L",
               ),
@@ -636,16 +629,21 @@ class TelaPrincipal extends StatefulWidget {
               ),
               _buildRow(
                 "Cimento (sacos)",
-                "${calc.cimentoSacoPerdaPiso.toStringAsFixed(2)} sacos",
+                "${calc.cimentoSacoPerdaPiso} sacos",
               ),
               _buildRow(
                 "Pedra Brita/Seixo",
                 "${calc.pedraBritaOuSeixo.toStringAsFixed(2)} m³",
               ),
+          // LISTA EXPANSORA
+          _buildMenuExpansivo(
+            titulo: "Quant. traço",
+            itens: [
+              _buildRow("Traço", calc.tracoPiso),
             ],
           ),
           // SEÇÃO 5: MATERIAIS PARA PREENCHIMENTO
-          _buildSectionHeader("Para preenchimento da BET de alvenaria"),
+          _buildSectionHeader("Material para preenchimento da BET de alvenaria"),
           _buildRow("Pneu Inservível", "${calc.pneuInservivel} unid."),
           _buildRow(
             "Entulho/Pedras",
@@ -655,7 +653,7 @@ class TelaPrincipal extends StatefulWidget {
 
           _buildRow(
             "Pedra brita ou seixo grosso",
-            "${calc.terraPretaSolo.toStringAsFixed(1)} m³",
+            "${calc.pedraBritaSeixo.toStringAsFixed(1)} m³",
           ),
           _buildRow(
             "Areia Média",
@@ -668,20 +666,23 @@ class TelaPrincipal extends StatefulWidget {
           _buildRow("Mudas Bananeira", "${calc.mudaBananeira} unid."),
           _buildRow(
             "Adubo Diverso",
-            "${calc.aduboDiverso.toStringAsFixed(1)} L",
+            "${calc.aduboDiverso} L",
           ),
 
           // SEÇÃO 3: Outros materiais
-          _buildSectionHeader("Materiais de Tubulação"),
+          _buildSectionHeader("Material para Tubulação"),
           _buildRow(
-            "Tubo de esgoto de PVC diâmetro 100 mm", "${calc.tuboEsgoto100(distancia).toStringAsFixed(1)} m"),
+            "Tubo de esgoto de PVC diâmetro 100 mm",
+            "${calc.tuboEsgoto100(distancia).toStringAsFixed(1)} m",
+            obs: "Equivale a ${calc.tuboEsgoto100Barras(distancia)} barra(s) de tubo (padrão de 6m).",
+          ),
           _buildRow(
             "Tubo de esgoto de PVC diâmetro 75 mm",
-            "${calc.tuboEsgoto75.toStringAsFixed(1)} m",
+            "${calc.tuboEsgoto75} m",
           ),
           _buildRow(
             "Tubo de esgoto de PVC diâmetro 40 mm",
-            "${calc.tuboEsgoto40.toStringAsFixed(1)} m",
+            "${calc.tuboEsgoto40} m",
           ),
           _buildRow("Tampão PVC 100mm", "${calc.tampaoPVC100} unid."),
           _buildRow("Tampão PVC 75mm", "${calc.tampaoPVC75} unid."),
