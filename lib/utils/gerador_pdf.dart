@@ -112,7 +112,6 @@ class GeradorPDF {
                             padding: const pw.EdgeInsets.only(right: 10),
                             child: pw.Image(logoImage, width: 35, height: 35),
                           ),
-                        pw.Text("PROJETO BET", style: titleStyle),
                       ],
                     ),
                     pw.Text("PROJETO BET", style: titleStyle),
