@@ -26,7 +26,7 @@ class GeradorPDF {
     // Carrega a logo
     pw.MemoryImage? logoImage;
     try {
-      final ByteData bytes = await rootBundle.load('assets/icon.png');
+      final ByteData bytes = await rootBundle.load('lib/img-utils/logo-bet.png');
       logoImage = pw.MemoryImage(bytes.buffer.asUint8List());
     } catch (e) {
       // Continua sem a logo caso não encontre o arquivo
@@ -91,6 +91,13 @@ class GeradorPDF {
           return pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
+              if (logoImage != null)
+                pw.Center(
+                  child: pw.Padding(
+                    padding: const pw.EdgeInsets.only(bottom: 10),
+                    child: pw.Image(logoImage, height: 60),
+                  ),
+                ),
               pw.Header(
                 level: 0,
                 child: pw.Row(
@@ -108,6 +115,7 @@ class GeradorPDF {
                         pw.Text("PROJETO BET", style: titleStyle),
                       ],
                     ),
+                    pw.Text("PROJETO BET", style: titleStyle),
                     pw.Text("Lista de Materiais", style: baseStyle),
                   ],
                 ),
