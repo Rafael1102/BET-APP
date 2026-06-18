@@ -7,7 +7,11 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'dart:typed_data';
 
 class GeradorPDF {
-  static Future<void> gerarPDF(CalculosBET calc, double distanciaCasa, String nomeComunidade) async {
+  static Future<void> gerarPDF(
+    CalculosBET calc,
+    double distanciaCasa,
+    String nomeComunidade,
+  ) async {
     final doc = pw.Document();
 
     // Define o estilo base
@@ -26,7 +30,9 @@ class GeradorPDF {
     // Carrega a logo
     pw.MemoryImage? logoImage;
     try {
-      final ByteData bytes = await rootBundle.load('lib/img-utils/logo-bet.png');
+      final ByteData bytes = await rootBundle.load(
+        'lib/img-utils/logo-bet.png',
+      );
       logoImage = pw.MemoryImage(bytes.buffer.asUint8List());
     } catch (e) {
       // Continua sem a logo caso não encontre o arquivo
@@ -64,7 +70,10 @@ class GeradorPDF {
             ),
             pw.SizedBox(width: 8),
             pw.Expanded(child: pw.Text(item, style: baseStyle)),
-            pw.Text(qtd, style: baseStyle.copyWith(fontWeight: pw.FontWeight.bold)),
+            pw.Text(
+              qtd,
+              style: baseStyle.copyWith(fontWeight: pw.FontWeight.bold),
+            ),
           ],
         ),
       );
@@ -85,7 +94,7 @@ class GeradorPDF {
       pw.MultiPage(
         pageFormat: PdfPageFormat.a4,
         margin: const pw.EdgeInsets.all(32),
-        
+
         // --- CABEÇALHO ---
         header: (pw.Context context) {
           return pw.Column(
@@ -96,7 +105,9 @@ class GeradorPDF {
                 child: pw.Row(
                   crossAxisAlignment: pw.CrossAxisAlignment.end,
                   children: [
-                    pw.Expanded(child: pw.SizedBox()), // Espaço vazio na esquerda para equilibrar
+                    pw.Expanded(
+                      child: pw.SizedBox(),
+                    ), // Espaço vazio na esquerda para equilibrar
                     pw.Column(
                       mainAxisSize: pw.MainAxisSize.min,
                       children: [
@@ -151,9 +162,7 @@ class GeradorPDF {
         build: (pw.Context context) {
           return [
             // 1. CONSTRUÇÃO
-            buildSectionHeader(
-              "1. Dados Gerais da BET Quadrada de Alvenaria",
-            ),
+            buildSectionHeader("1. Dados Gerais da BET Quadrada de Alvenaria"),
             buildItemRow(
               "Volume da BET",
               "${calc.volumeDaBet.toStringAsFixed(2)} m³",
@@ -212,42 +221,94 @@ class GeradorPDF {
             ),
 
             // 2. PAREDES
-            buildSectionHeader("2. Materiais para construção das paredes da BET"),
-            buildItemRow("Areia média", "${calc.areiaMedia.toStringAsFixed(2)} m³"),
+            buildSectionHeader(
+              "2. Materiais para construção das paredes da BET",
+            ),
+            buildItemRow(
+              "Areia média",
+              "${calc.areiaMedia.toStringAsFixed(2)} m³",
+            ),
             buildItemRow("Cimento", "${calc.cimentoKg.toStringAsFixed(2)} kg"),
-            buildItemRow("Cimento", "${calc.cimentoSacos.toStringAsFixed(2)} sacos"),
+            buildItemRow(
+              "Cimento",
+              "${calc.cimentoSacos.toStringAsFixed(2)} sacos",
+            ),
             buildItemRow("Tijolo 6 furos", "${calc.tijolos6Furos} unid."),
 
             // 3. REBOCO
             buildSectionHeader("3. Materiais para reboco na parede da BET"),
-            buildItemRow("Aditivo Impermeabilizante", "${calc.aditivoImpermeabilizante.toStringAsFixed(1)} L"),
-            buildItemRow("Areia média", "${calc.areiaMedia.toStringAsFixed(3)} m³"),
-            buildItemRow("Cimento", "${calc.cimentoComPerda.toStringAsFixed(2)} kg"),
-            buildItemRow("Cimento", "${calc.cimentoSacoComPerda.toStringAsFixed(2)} sacos"),
+            buildItemRow(
+              "Aditivo Impermeabilizante",
+              "${calc.aditivoImpermeabilizanteReboco.toStringAsFixed(2)} L",
+            ),
+            buildItemRow(
+              "Areia média",
+              "${calc.areiaMediaReboco.toStringAsFixed(2)} m³",
+            ),
+            buildItemRow(
+              "Cimento",
+              "${calc.cimentoComPerda.toStringAsFixed(2)} kg",
+            ),
+            buildItemRow(
+              "Cimento",
+              "${calc.cimentoSacoComPerda.toStringAsFixed(2)} sacos",
+            ),
             buildItemRow("Traço para reboco da paredes", calc.tracoReboco),
 
             // 4. PISO
-            buildSectionHeader("4. Material para construção do piso da BET"),
-            buildItemRow("Aditivo Impermeabilizante", "${calc.aditivoImpermeabilizante.toStringAsFixed(1)} L"),
-            buildItemRow("Areia", "${calc.areiaParaPiso.toStringAsFixed(2)} m³"),
-            buildItemRow("Cimento", "${calc.cimentoKgPerdaPiso} kg"),
-            buildItemRow("Cimento", "${calc.cimentoSacoPerdaPiso} sacos"),
-            buildItemRow("Pedra Brita/Seixo", "${calc.pedraBritaOuSeixo.toStringAsFixed(2)} m³"),
+            buildSectionHeader("4. Material para construction do piso da BET"),
+            buildItemRow(
+              "Aditivo Impermeabilizante",
+              "${calc.aditivoImpermeabilizantePiso.toStringAsFixed(2)} L",
+            ),
+            buildItemRow(
+              "Areia média",
+              "${calc.areiaParaPiso.toStringAsFixed(2)} m³",
+            ),
+            buildItemRow(
+              "Cimento",
+              "${calc.cimentoKgPerdaPiso.toStringAsFixed(2)} kg",
+            ),
+            buildItemRow(
+              "Cimento",
+              "${calc.cimentoSacoPerdaPiso.toStringAsFixed(2)} sacos",
+            ),
+            buildItemRow(
+              "Pedra Brita/Seixo",
+              "${calc.pedraBritaOuSeixoPiso.toStringAsFixed(2)} m³",
+            ),
             buildItemRow("Traço para piso", calc.tracoPiso),
 
             // 5. PREENCHIMENTO
-            buildSectionHeader("5. Material para preenchimento da BET de alvenaria"),
+            buildSectionHeader(
+              "5. Material para preenchimento da BET de alvenaria",
+            ),
             buildItemRow("Pneu inservível", "${calc.pneuInservivel} unid."),
-            buildItemRow("Entulho/Pedras (Limpo)", "${calc.entulhoPedras.toStringAsFixed(2)} m³"),
-            buildItemRow("Pedra brita ou seixo grosso", "${calc.pedraBritaSeixo.toStringAsFixed(1)} m³"),
-            buildItemRow("Areia Média", "${calc.areiaMediaPreenchimento.toStringAsFixed(1)} m³"),
-            buildItemRow("Terra preta/Solo", "${calc.terraPretaSolo.toStringAsFixed(2)} m³"),
+            buildItemRow(
+              "Entulho/Pedras (Limpo)",
+              "${calc.entulhoPedras.toStringAsFixed(2)} m³",
+            ),
+            buildItemRow(
+              "Pedra brita ou seixo grosso",
+              "${calc.pedraBritaSeixo.toStringAsFixed(2)} m³",
+            ),
+            buildItemRow(
+              "Areia Média",
+              "${calc.areiaMediaPreenchimento.toStringAsFixed(2)} m³",
+            ),
+            buildItemRow(
+              "Terra preta/Solo",
+              "${calc.terraPretaSolo.toStringAsFixed(2)} m³",
+            ),
             buildItemRow("Mudas de Bananeira", "${calc.mudaBananeira} unid."),
             buildItemRow("Adubo Diverso", "${calc.aduboDiverso} L"),
 
             // 6. TUBULAÇÃO
             buildSectionHeader("6. Tubulações de Esgoto"),
-            buildItemRow("Tubo PVC 100mm", "${calc.tuboEsgoto100(distanciaCasa).toStringAsFixed(1)} m (${calc.tuboEsgoto100Barras(distanciaCasa)} barras)"),
+            buildItemRow(
+              "Tubo PVC 100mm",
+              "${calc.tuboEsgoto100(distanciaCasa).toStringAsFixed(1)} m (${calc.tuboEsgoto100Barras(distanciaCasa)} barras)",
+            ),
             buildItemRow("Tubo PVC 75mm", "${calc.tuboEsgoto75} m"),
             buildItemRow("Tubo PVC 40mm", "${calc.tuboEsgoto40} m"),
             buildItemRow("Tampão PVC 100mm", "${calc.tampaoPVC100} unid."),
@@ -256,10 +317,13 @@ class GeradorPDF {
               "Curva Esgoto 90º de 100mm",
               "Depende da instalação local",
             ),
-            buildItemRow("Joelho Esgoto 45º diâmetro 100mm", "Depende da instalação local"),
+            buildItemRow(
+              "Joelho Esgoto 45º diâmetro 100mm",
+              "Depende da instalação local",
+            ),
             buildItemRow("Luva Esgoto 100mm", "${calc.luvaEsgoto100} unid."),
             buildItemRow("Tê PVC 100mm", "${calc.tePVC100} unid."),
-            
+
             pw.SizedBox(height: 5),
             pw.Text(
               "*Adquirir conexões (Luvas, Tês, Joelhos) conforme a instalação local.",
@@ -292,32 +356,86 @@ class GeradorPDF {
                     ),
                   ),
                   pw.SizedBox(height: 15),
-                  
-                  pw.Text("1. CONSTRUÇÃO E ALVENARIA", style: baseStyle.copyWith(fontWeight: pw.FontWeight.bold)),
+
+                  pw.Text(
+                    "1. CONSTRUÇÃO E ALVENARIA",
+                    style: baseStyle.copyWith(fontWeight: pw.FontWeight.bold),
+                  ),
                   pw.SizedBox(height: 5),
-                  buildChecklistItem("Tijolos 6 furos", "${calc.tijolos6Furos} unid."),
-                  buildChecklistItem("Cimento Total", "${(calc.cimentoSacos + calc.cimentoSacoComPerda + calc.cimentoSacoPerdaPiso).toStringAsFixed(2)} sacos"),
-                  buildChecklistItem("Areia Média", "${calc.areiaMedia.toStringAsFixed(2)} m³"),
-                  buildChecklistItem("Pedra Brita/Seixo", "${calc.pedraBritaOuSeixo.toStringAsFixed(2)} m³"),
-                  buildChecklistItem("Aditivo Impermeabilizante", "${calc.aditivoImpermeabilizante.toStringAsFixed(1)} L"),
+                  buildChecklistItem(
+                    "Tijolos 6 furos",
+                    "${calc.tijolos6Furos} unid.",
+                  ),
+                  buildChecklistItem(
+                    "Cimento Total",
+                    "${calc.cimentoSacosTotal.toStringAsFixed(2)} sacos",
+                  ),
+                  buildChecklistItem(
+                    "Areia Total",
+                    "${calc.areiaMediaTotal.toStringAsFixed(2)} m³",
+                  ),
+                  buildChecklistItem(
+                    "Pedra Brita/Seixo",
+                    "${calc.pedraBritaOuSeixo.toStringAsFixed(2)} m³",
+                  ),
+                  buildChecklistItem(
+                    "Aditivo Impermeabilizante",
+                    "${calc.aditivoImpermeabilizante.toStringAsFixed(2)} L",
+                  ),
                   pw.SizedBox(height: 12),
-                  
-                  pw.Text("2. PREENCHIMENTO E PAISAGISMO", style: baseStyle.copyWith(fontWeight: pw.FontWeight.bold)),
+
+                  pw.Text(
+                    "2. PREENCHIMENTO E PAISAGISMO",
+                    style: baseStyle.copyWith(fontWeight: pw.FontWeight.bold),
+                  ),
                   pw.SizedBox(height: 5),
-                  buildChecklistItem("Pneus Inservíveis", "${calc.pneuInservivel} unid."),
-                  buildChecklistItem("Entulho/Pedras (Limpo)", "${calc.entulhoPedras.toStringAsFixed(2)} m³"),
-                  buildChecklistItem("Terra Preta/Substrato", "${calc.terraPretaSolo.toStringAsFixed(2)} m³"),
-                  buildChecklistItem("Mudas de Bananeira", "${calc.mudaBananeira} unid."),
+                  buildChecklistItem(
+                    "Pneus Inservíveis",
+                    "${calc.pneuInservivel} unid.",
+                  ),
+                  buildChecklistItem(
+                    "Entulho/Pedras (Limpo)",
+                    "${calc.entulhoPedras.toStringAsFixed(2)} m³",
+                  ),
+                  buildChecklistItem(
+                    "Terra Preta/Substrato",
+                    "${calc.terraPretaSolo.toStringAsFixed(2)} m³",
+                  ),
+                  buildChecklistItem(
+                    "Mudas de Bananeira",
+                    "${calc.mudaBananeira} unid.",
+                  ),
                   buildChecklistItem("Adubo Diverso", "${calc.aduboDiverso} L"),
                   pw.SizedBox(height: 12),
 
-                  pw.Text("3. TUBULAÇÃO DE ESGOTO", style: baseStyle.copyWith(fontWeight: pw.FontWeight.bold)),
+                  pw.Text(
+                    "3. TUBULAÇÃO DE ESGOTO",
+                    style: baseStyle.copyWith(fontWeight: pw.FontWeight.bold),
+                  ),
                   pw.SizedBox(height: 5),
-                  buildChecklistItem("Tubo PVC 100mm", "${calc.tuboEsgoto100(distanciaCasa).toStringAsFixed(1)} m (${calc.tuboEsgoto100Barras(distanciaCasa)} barras)"),
+                  buildChecklistItem(
+                    "Tubo PVC 100mm",
+                    "${calc.tuboEsgoto100(distanciaCasa).toStringAsFixed(1)} m (${calc.tuboEsgoto100Barras(distanciaCasa)} barras)",
+                  ),
                   buildChecklistItem("Tubo PVC 75mm", "${calc.tuboEsgoto75} m"),
                   buildChecklistItem("Tubo PVC 40mm", "${calc.tuboEsgoto40} m"),
-                  buildChecklistItem("Tampão PVC 100mm", "${calc.tampaoPVC100} unid."),
-                  buildChecklistItem("Tampão PVC 75mm", "${calc.tampaoPVC75} unid."),
+                  buildChecklistItem(
+                    "Tampão PVC 100mm",
+                    "${calc.tampaoPVC100} unid.",
+                  ),
+                  buildChecklistItem(
+                    "Tampão PVC 75mm",
+                    "${calc.tampaoPVC75} unid.",
+                  ),
+                  pw.SizedBox(height: 15),
+                  pw.Text(
+                    "* Valores marcados como 'Total' representam a soma de todas as etapas da obra (construção, reboco, piso e preenchimento).",
+                    style: pw.TextStyle(
+                      fontSize: 9,
+                      fontStyle: pw.FontStyle.italic,
+                      color: PdfColors.grey700,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -332,7 +450,10 @@ class GeradorPDF {
   }
 
   static String gerarTextoCompartilhamento(
-    CalculosBET calc, double distanciaCasa, String nomeComunidade) {
+    CalculosBET calc,
+    double distanciaCasa,
+    String nomeComunidade,
+  ) {
     return """
 *LISTA DE MATERIAIS - PROJETO BET*
 ---------------------------------------
@@ -345,9 +466,9 @@ class GeradorPDF {
 [ ] Tijolos 6 furos: ${calc.tijolos6Furos} unid.
 [ ] Cimento (Paredes): ${calc.cimentoSacos.toStringAsFixed(2)} sacos (${calc.cimentoKg.toStringAsFixed(2)} kg)
 [ ] Cimento (Reboco): ${calc.cimentoSacoComPerda.toStringAsFixed(2)} sacos (${calc.cimentoComPerda.toStringAsFixed(2)} kg)
-[ ] Cimento (Piso): ${calc.cimentoSacoPerdaPiso} sacos (${calc.cimentoKgPerdaPiso} kg)
-[ ] Cimento Total: ${(calc.cimentoSacos + calc.cimentoSacoComPerda + calc.cimentoSacoPerdaPiso).toStringAsFixed(2)} sacos
-[ ] Areia Média: ${calc.areiaMedia.toStringAsFixed(2)} m³
+[ ] Cimento (Piso): ${calc.cimentoSacoPerdaPiso.toStringAsFixed(2)} sacos (${calc.cimentoKgPerdaPiso.toStringAsFixed(2)} kg)
+[ ] Cimento Total: ${calc.cimentoSacosTotal.toStringAsFixed(2)} sacos
+[ ] Areia Total: ${calc.areiaMediaTotal.toStringAsFixed(2)} m³
 [ ] Pedra Brita/Seixo: ${calc.pedraBritaOuSeixo.toStringAsFixed(2)} m³
 [ ] Aditivo Impermeabilizante: ${calc.aditivoImpermeabilizante.toStringAsFixed(2)} L
 

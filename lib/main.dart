@@ -39,7 +39,7 @@ class TelaPrincipal extends StatefulWidget {
   State<TelaPrincipal> createState() => _TelaPrincipalState();
 }
 
-  class _TelaPrincipalState extends State<TelaPrincipal> {
+class _TelaPrincipalState extends State<TelaPrincipal> {
   int _indiceAtual = 0; // Controla qual aba está visível
 
   // Controladores de texto
@@ -63,13 +63,13 @@ class TelaPrincipal extends StatefulWidget {
   Future<void> _verificarStatusPesquisa() async {
     final prefs = await SharedPreferences.getInstance();
 
-    await prefs.remove('pesquisa_finalizada'); 
+    await prefs.remove('pesquisa_finalizada');
     // ------------------------------------
     _pesquisaFinalizada = prefs.getBool('pesquisa_finalizada') ?? false;
 
     if (!_pesquisaFinalizada) {
       setState(() => _exibirPopup = true);
-      
+
       // O pop-up desaparece automaticamente ao fim de 1 minutos
       _timer = Timer(const Duration(minutes: 1), () {
         if (mounted) {
@@ -211,7 +211,9 @@ class TelaPrincipal extends StatefulWidget {
               child: Card(
                 color: Colors.green[50],
                 elevation: 10,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
@@ -219,7 +221,10 @@ class TelaPrincipal extends StatefulWidget {
                     children: [
                       const Text(
                         "A sua opinião é importante!",
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
                       ),
                       const SizedBox(height: 8),
                       const Text(
@@ -232,26 +237,32 @@ class TelaPrincipal extends StatefulWidget {
                         children: [
                           TextButton(
                             onPressed: _marcarComoRespondido,
-                            child: Text("JÁ RESPONDI", style: TextStyle(color: Colors.grey[700])),
+                            child: Text(
+                              "JÁ RESPONDI",
+                              style: TextStyle(color: Colors.grey[700]),
+                            ),
                           ),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.green[800], 
-                              foregroundColor: Colors.white
+                              backgroundColor: Colors.green[800],
+                              foregroundColor: Colors.white,
                             ),
                             onPressed: () {
                               _marcarComoRespondido(); // Grava que ele aceitou
-                              
+
                               // Navega para a sua Tela de Consentimento
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => const TelaConsentimento()),
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const TelaConsentimento(),
+                                ),
                               );
                             },
                             child: const Text("RESPONDER"),
                           ),
                         ],
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -321,16 +332,19 @@ class TelaPrincipal extends StatefulWidget {
                   onTap: () {
                     int moradores =
                         int.tryParse(_moradoresController.text) ?? 0;
-                        double distancia =
+                    double distancia =
                         double.tryParse(_distanciaController.text) ?? 4.0;
                     final calc = CalculosBET(moradores);
                     String comunidade = _comunidadeController.text;
                     String textoCompartilhamento =
-                        GeradorPDF.gerarTextoCompartilhamento(calc, distancia, comunidade);
+                        GeradorPDF.gerarTextoCompartilhamento(
+                          calc,
+                          distancia,
+                          comunidade,
+                        );
                     Share.share(
                       textoCompartilhamento,
-                      subject:
-                          'Lista de Materiais BET - $comunidade',
+                      subject: 'Lista de Materiais BET - $comunidade',
                     );
                     setState(() {
                       _indiceAtual = 0;
@@ -509,13 +523,13 @@ class TelaPrincipal extends StatefulWidget {
 
           // SEÇÃO 1: DADOS GERAIS
           _buildSectionHeader("Dados Gerais da BET"),
-         /* _buildRow(
+
+          /* _buildRow(
             "Comunidade / Local",
             _comunidadeController.text.isEmpty
                 ? "Não informado"
                 : _comunidadeController.text,
           ),*/
-
           _buildRow(
             "Volume da BET",
             "${calc.volumeDaBet.toStringAsFixed(1)} m³",
@@ -558,19 +572,19 @@ class TelaPrincipal extends StatefulWidget {
               ),
               _buildRow(
                 "Alt. da camada de entulho/pneu ",
-                "${calc.alturaCamadaEntulho.toStringAsFixed(2)} m²",
+                "${calc.alturaCamadaEntulho.toStringAsFixed(2)} m",
               ),
               _buildRow(
                 "Alt. da camada de seixo grosso ou pedra brita",
-                "${calc.alturaCamadaBrita.toStringAsFixed(2)} m²",
+                "${calc.alturaCamadaBrita.toStringAsFixed(2)} m",
               ),
               _buildRow(
                 "Alt. da camada de areia",
-                "${calc.alturaCamadaAreia.toStringAsFixed(2)} m²",
+                "${calc.alturaCamadaAreia.toStringAsFixed(2)} m",
               ),
               _buildRow(
                 "Alt. da camada de substrato/solo",
-                "${calc.alturaCamadaSolo.toStringAsFixed(2)} m²",
+                "${calc.alturaCamadaSolo.toStringAsFixed(2)} m",
               ),
               _buildRow(
                 "Volume da câmara de pneu",
@@ -583,10 +597,7 @@ class TelaPrincipal extends StatefulWidget {
           _buildSectionHeader("Materiais para construção das paredes da BET"),
           _buildRow("Areia Média", "${calc.areiaMedia.toStringAsFixed(2)} m³"),
           _buildRow("Cimento", "${calc.cimentoKg.toStringAsFixed(2)} kg"),
-          _buildRow(
-            "Cimento",
-            "${calc.cimentoSacos.toStringAsFixed(2)} sacos",
-          ),
+          _buildRow("Cimento", "${calc.cimentoSacos.toStringAsFixed(2)} sacos"),
           _buildRow("Tijolos 6 furos", "${calc.tijolos6Furos} unid."),
 
           // SEÇÃO 3: MATERIAIS DA PAREDE
@@ -594,56 +605,51 @@ class TelaPrincipal extends StatefulWidget {
 
           // LISTA EXPANSORA
           _buildRow(
-                "Aditivo Impermeabilizante",
-                "${calc.aditivoImpermeabilizante.toStringAsFixed(1)} L",
-              ),
-              _buildRow(
-                "Areia média",
-                "${calc.areiaMedia.toStringAsFixed(3)} m³",
-              ),
-              _buildRow(
-                "Cimento",
-                "${calc.cimentoComPerda.toStringAsFixed(2)} kg",
-              ),
-              _buildRow(
-                "Cimento",
-                "${calc.cimentoSacoComPerda.toStringAsFixed(2)} sacos",
-              ),
-              _buildMenuExpansivo(
-               titulo: "Quant. traço",
-               itens: [
-          _buildRow("Traço", calc.tracoReboco),
-            ],
+            "Aditivo Impermeabilizante",
+            "${calc.aditivoImpermeabilizanteReboco.toStringAsFixed(2)} L",
+          ),
+          _buildRow(
+            "Areia média",
+            "${calc.areiaMediaReboco.toStringAsFixed(2)} m³",
+          ),
+          _buildRow("Cimento", "${calc.cimentoComPerda.toStringAsFixed(2)} kg"),
+          _buildRow(
+            "Cimento",
+            "${calc.cimentoSacoComPerda.toStringAsFixed(2)} sacos",
+          ),
+          _buildMenuExpansivo(
+            titulo: "Quant. traço",
+            itens: [_buildRow("Traço", calc.tracoReboco)],
           ),
 
           // SEÇÃO 4: MATERIAIS DO PISO
           _buildSectionHeader("Material para construção do piso da BET"),
           _buildRow(
-                "Aditivo Impermeabilizante",
-                "${calc.aditivoImpermeabilizante.toStringAsFixed(1)} L",
-              ),
-              _buildRow("Areia", "${calc.areiaParaPiso.toStringAsFixed(2)} m³"),
-              _buildRow(
-                "Cimento",
-                "${calc.cimentoKgPerdaPiso.toStringAsFixed(2)} kg",
-              ),
-              _buildRow(
-                "Cimento",
-                "${calc.cimentoSacoPerdaPiso} sacos",
-              ),
-              _buildRow(
-                "Pedra Brita/Seixo",
-                "${calc.pedraBritaOuSeixo.toStringAsFixed(2)} m³",
-              ),
+            "Aditivo Impermeabilizante",
+            "${calc.aditivoImpermeabilizantePiso.toStringAsFixed(2)} L",
+          ),
+          _buildRow("Areia média", "${calc.areiaParaPiso.toStringAsFixed(2)} m³"),
+          _buildRow(
+            "Cimento",
+            "${calc.cimentoKgPerdaPiso.toStringAsFixed(2)} kg",
+          ),
+          _buildRow(
+            "Cimento",
+            "${calc.cimentoSacoPerdaPiso.toStringAsFixed(2)} sacos",
+          ),
+          _buildRow(
+            "Pedra Brita/Seixo",
+            "${calc.pedraBritaOuSeixoPiso.toStringAsFixed(2)} m³",
+          ),
           // LISTA EXPANSORA
           _buildMenuExpansivo(
             titulo: "Quant. traço",
-            itens: [
-              _buildRow("Traço", calc.tracoPiso),
-            ],
+            itens: [_buildRow("Traço", calc.tracoPiso)],
           ),
           // SEÇÃO 5: MATERIAIS PARA PREENCHIMENTO
-          _buildSectionHeader("Material para preenchimento da BET de alvenaria"),
+          _buildSectionHeader(
+            "Material para preenchimento da BET de alvenaria",
+          ),
           _buildRow("Pneu Inservível", "${calc.pneuInservivel} unid."),
           _buildRow(
             "Entulho/Pedras",
@@ -653,28 +659,26 @@ class TelaPrincipal extends StatefulWidget {
 
           _buildRow(
             "Pedra brita ou seixo grosso",
-            "${calc.pedraBritaSeixo.toStringAsFixed(1)} m³",
+            "${calc.pedraBritaSeixo.toStringAsFixed(2)} m³",
           ),
           _buildRow(
             "Areia Média",
-            "${calc.areiaMediaPreenchimento.toStringAsFixed(1)} m³",
+            "${calc.areiaMediaPreenchimento.toStringAsFixed(2)} m³",
           ),
           _buildRow(
             "Terra Preta/Solo",
-            "${calc.terraPretaSolo.toStringAsFixed(1)} m³",
+            "${calc.terraPretaSolo.toStringAsFixed(2)} m³",
           ),
           _buildRow("Mudas Bananeira", "${calc.mudaBananeira} unid."),
-          _buildRow(
-            "Adubo Diverso",
-            "${calc.aduboDiverso} L",
-          ),
+          _buildRow("Adubo Diverso", "${calc.aduboDiverso} L"),
 
           // SEÇÃO 3: Outros materiais
           _buildSectionHeader("Material para Tubulação"),
           _buildRow(
             "Tubo de esgoto de PVC diâmetro 100 mm",
             "${calc.tuboEsgoto100(distancia).toStringAsFixed(1)} m",
-            obs: "Equivale a ${calc.tuboEsgoto100Barras(distancia)} barra(s) de tubo (padrão de 6m).",
+            obs:
+                "Equivale a ${calc.tuboEsgoto100Barras(distancia)} barra(s) de tubo (padrão de 6m).",
           ),
           _buildRow(
             "Tubo de esgoto de PVC diâmetro 75 mm",
@@ -698,6 +702,18 @@ class TelaPrincipal extends StatefulWidget {
           ),
           _buildRow("Luva esgoto 100mm", "${calc.luvaEsgoto100} unid."),
           _buildRow("Tê esgoto 100mm", "${calc.tePVC100} unid."),
+          const SizedBox(height: 15),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 12),
+            child: Text(
+              "* Os valores marcados como 'Total' no resumo do PDF e compartilhamento representam a soma de todas as etapas detalhadas acima (paredes, reboco, piso e preenchimento).",
+              style: TextStyle(
+                fontSize: 13,
+                color: Colors.grey,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+          ),
           const SizedBox(height: 5),
         ], // Fecha children
       ), // Fecha Column
