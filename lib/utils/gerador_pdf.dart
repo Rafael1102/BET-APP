@@ -256,7 +256,7 @@ class GeradorPDF {
             buildItemRow("Traço para reboco da paredes", calc.tracoReboco),
 
             // 4. PISO
-            buildSectionHeader("4. Material para construction do piso da BET"),
+            buildSectionHeader("4. Material para construção do piso da BET"),
             buildItemRow(
               "Aditivo Impermeabilizante",
               "${calc.aditivoImpermeabilizantePiso.toStringAsFixed(2)} L",
@@ -307,7 +307,7 @@ class GeradorPDF {
             buildSectionHeader("6. Tubulações de Esgoto"),
             buildItemRow(
               "Tubo PVC 100mm",
-              "${calc.tuboEsgoto100(distanciaCasa).toStringAsFixed(1)} m (${calc.tuboEsgoto100Barras(distanciaCasa)} barras)",
+              "${calc.tuboEsgoto100(distanciaCasa).toStringAsFixed(1)} m (${calc.tuboEsgoto100Barras(distanciaCasa)} varas)",
             ),
             buildItemRow("Tubo PVC 75mm", "${calc.tuboEsgoto75} m"),
             buildItemRow("Tubo PVC 40mm", "${calc.tuboEsgoto40} m"),
@@ -415,7 +415,7 @@ class GeradorPDF {
                   pw.SizedBox(height: 5),
                   buildChecklistItem(
                     "Tubo PVC 100mm",
-                    "${calc.tuboEsgoto100(distanciaCasa).toStringAsFixed(1)} m (${calc.tuboEsgoto100Barras(distanciaCasa)} barras)",
+                    "${calc.tuboEsgoto100(distanciaCasa).toStringAsFixed(1)} m (${calc.tuboEsgoto100Barras(distanciaCasa)} varas)",
                   ),
                   buildChecklistItem("Tubo PVC 75mm", "${calc.tuboEsgoto75} m"),
                   buildChecklistItem("Tubo PVC 40mm", "${calc.tuboEsgoto40} m"),
@@ -480,7 +480,7 @@ class GeradorPDF {
 [ ] Adubo Diverso: ${calc.aduboDiverso} L
 
 *3. TUBULAÇÃO DE ESGOTO*
-[ ] Tubo PVC 100mm: ${calc.tuboEsgoto100(distanciaCasa).toStringAsFixed(1)} m (${calc.tuboEsgoto100Barras(distanciaCasa)} barras)
+[ ] Tubo PVC 100mm: ${calc.tuboEsgoto100(distanciaCasa).toStringAsFixed(1)} m (${calc.tuboEsgoto100Barras(distanciaCasa)} varas)
 [ ] Tubo PVC 75mm: ${calc.tuboEsgoto75} m
 [ ] Tubo PVC 40mm: ${calc.tuboEsgoto40} m
 [ ] Tampão PVC 100mm: ${calc.tampaoPVC100} unid.

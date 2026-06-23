@@ -678,7 +678,7 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
             "Tubo de esgoto de PVC diâmetro 100 mm",
             "${calc.tuboEsgoto100(distancia).toStringAsFixed(1)} m",
             obs:
-                "Equivale a ${calc.tuboEsgoto100Barras(distancia)} barra(s) de tubo (padrão de 6m).",
+                "Equivale a ${calc.tuboEsgoto100Barras(distancia)} vara(s) de tubo (padrão de 6m).",
           ),
           _buildRow(
             "Tubo de esgoto de PVC diâmetro 75 mm",

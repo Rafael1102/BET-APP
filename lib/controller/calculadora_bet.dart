@@ -121,8 +121,13 @@ class CalculosBET {
   double get cimentoKgPerdaPiso => cimentoSacoPerdaPiso * 50;
 
   // Cimento total (sacos) - Soma de todas as etapas: Alvenaria, Reboco e Piso
-  double get cimentoSacosTotal =>
-      cimentoSacos + cimentoSacoComPerda + cimentoSacoPerdaPiso;
+  double get cimentoSacosTotal {
+    double total = cimentoSacos + cimentoSacoComPerda + cimentoSacoPerdaPiso;
+    if ((total - total.truncate()) > 0.5) {
+      return total.ceilToDouble();
+    }
+    return total;
+  }
 
   // Cimento total (kg) - Soma de todas as etapas: Alvenaria, Reboco e Piso
   double get cimentoKgTotal => cimentoKg + cimentoComPerda + cimentoKgPerdaPiso;
@@ -151,7 +156,7 @@ class CalculosBET {
 
   // 23. Adubo diverso (L)
   // Tabela: "8L/cova"
-  double get aduboDiverso => mudaBananeira * 8.0;
+  double get aduboDiverso => mudaBananeira * 4.0;
 
   // --- Tubulações e Conexões ---
   int get tampaoPVC75 => 1;
