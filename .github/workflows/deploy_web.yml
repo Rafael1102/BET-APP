@@ -1,0 +1,25 @@
+name: Deploy Flutter Web para GitHub Pages
+on:
+  push:
+    branches:
+      - main # Se a sua branch principal for master, mude aqui
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar o código
+        uses: actions/checkout@v3
+      - name: Configurar o Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+      - name: Instalar dependências
+        run: flutter pub get
+      - name: Fazer a Build para Web
+        # ATENÇÃO: Substitua "BET-APP" pelo nome EXATO do seu repositório no GitHub
+        run: flutter build web --base-href "/BET-APP/"
+      - name: Publicar no GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build/web

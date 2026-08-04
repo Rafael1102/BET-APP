@@ -64,7 +64,7 @@ class _TelaConsentimentoState extends State<TelaConsentimento> {
                     "Riscos e Benefícios: A atividade apresenta riscos mínimos, limitando-se ao tempo dedicado à avaliação. Não há benefícios diretos, mas a sua colaboração ajudará a aprimorar uma ferramenta que poderá auxiliar estudantes e profissionais de saneamento ambiental.\n\n"
                     "Privacidade e Voluntariedade: A sua participação é totalmente anônima e voluntária. Não solicitaremos nenhuma informação que permita a sua identificação. Os dados coletados serão analisados de forma agrupada e utilizados exclusivamente para fins acadêmicos e científicos. Você pode desistir de participar a qualquer momento, bastando fechar esta página.\n\n"
                     "Em caso de dúvidas, entre em contato com a equipe responsável:\n\n"
-                    "Prof. Dr. Felipe André da Costa Brito - felipe.brito@ufra.edu.br\n\n"
+                    "Prof. Dr. Felipe André da Costa Brito - mailto:felipe.brito@ufra.edu.br\n\n"
                     "Rafael de Oliveira Mendonça – mailto:rafa.ro195@gmail.com \n\n"
                     "Ao selecionar a opção abaixo e prosseguir, você declara que leu, compreendeu as informações acima e concorda em participar voluntariamente da avaliação.",
                     style: TextStyle(fontSize: 15, height: 1.5),
@@ -104,7 +104,7 @@ class _TelaConsentimentoState extends State<TelaConsentimento> {
                     ),
                     const Expanded(
                       child: Text(
-                        "Li e aceito participar da pesquisa.",
+                        "Ao selecionar a opção abaixo e prosseguir, você declara que leu, compreendeu as informações acima e concorda em participar voluntariamente da avaliação.",
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),

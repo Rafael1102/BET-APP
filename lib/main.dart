@@ -404,7 +404,7 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
           ),
           const SizedBox(height: 20),
           _buildCardInput(
-            title: "Estado Solo",
+            title: "Estado do Solo",
             child: Column(
               children: [
                 const Text(
