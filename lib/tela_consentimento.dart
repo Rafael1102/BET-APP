@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class TelaConsentimento extends StatefulWidget {
-  const TelaConsentimento({Key? key}) : super(key: key);
+  const TelaConsentimento({super.key});
 
   @override
   State<TelaConsentimento> createState() => _TelaConsentimentoState();
@@ -14,8 +14,9 @@ class _TelaConsentimentoState extends State<TelaConsentimento> {
   // Função para abrir o questionário (Exemplo com Google Forms)
   Future<void> _abrirQuestionario() async {
     // Substitua pelo link real do seu Google Forms
-    final String linkForms = "https://docs.google.com/forms/d/e/1FAIpQLSf3zyN37g-Vap33gV-CqfBLh3ove0YsRaDe5vqQX1A4gmLIpw/viewform?usp=dialog"; 
-    
+    final String linkForms =
+        "https://docs.google.com/forms/d/e/1FAIpQLSf3zyN37g-Vap33gV-CqfBLh3ove0YsRaDe5vqQX1A4gmLIpw/viewform?usp=dialog";
+
     // Lógica para abrir o link (requer o pacote url_launcher no pubspec.yaml)
     final Uri url = Uri.parse(linkForms);
     if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
@@ -23,10 +24,12 @@ class _TelaConsentimentoState extends State<TelaConsentimento> {
         const SnackBar(content: Text('Não foi possível abrir o questionário.')),
       );
     }
-    
+
     // Apenas para teste visual enquanto não coloca o link:
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Redirecionando para a pesquisa... Obrigado!')),
+      const SnackBar(
+        content: Text('Redirecionando para a pesquisa... Obrigado!'),
+      ),
     );
   }
 
@@ -74,7 +77,7 @@ class _TelaConsentimentoState extends State<TelaConsentimento> {
               ),
             ),
           ),
-          
+
           // Área de Ação (Fixa no rodapé)
           Container(
             padding: const EdgeInsets.all(20.0),
@@ -119,13 +122,16 @@ class _TelaConsentimentoState extends State<TelaConsentimento> {
                       backgroundColor: Colors.green[800],
                       foregroundColor: Colors.white,
                       // O botão fica cinza se o checkbox não estiver marcado
-                      disabledBackgroundColor: Colors.grey[300], 
+                      disabledBackgroundColor: Colors.grey[300],
                       disabledForegroundColor: Colors.grey[600],
                     ),
                     onPressed: _aceitouTermos ? _abrirQuestionario : null,
                     child: const Text(
                       "ACEITAR E RESPONDER",
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),

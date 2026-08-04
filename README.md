@@ -27,10 +27,12 @@ O projeto utiliza as melhores práticas de desenvolvimento mobile moderno:
 
 ---
 
-## 📥 Download e Avaliação
-A tua ajuda é fundamental para o meu TCC na **UFRA**! Podes baixar o APK e avaliar a experiência de uso no link abaixo:
+## 📥 Acesso, Download e Avaliação
+A sua ajuda é fundamental para o meu TCC na **UFRA**! Você pode testar o sistema diretamente pelo navegador (sem precisar instalar nada) ou baixar o aplicativo (APK) para Android:
 
-👉 **[Página de Download do Projeto BET](https://rafael1102.github.io/Site-para-Download-app-bet/)**
+🌐 **[Acessar a Versão Web do Sistema BET](https://rafael1102.github.io/BET-APP/)**
+
+📱 **[Página de Download do APK (Android)](https://rafael1102.github.io/Site-para-Download-app-bet/)**
 
 ---
 
