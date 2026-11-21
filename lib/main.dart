@@ -3,13 +3,21 @@ import 'package:app_bet/controller/calculadora_bet.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:app_bet/utils/gerador_pdf.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 /* Dependências da pesquisa desativada.
 import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:app_bet/tela_consentimento.dart';
 */
 
-void main() => runApp(const ProjetoBET());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(const ProjetoBET());
+}
 
 class ProjetoBET extends StatelessWidget {
   const ProjetoBET({super.key});

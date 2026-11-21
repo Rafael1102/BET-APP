@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "526718342576",
+    "project_id": "bet-app-91b20",
+    "storage_bucket": "bet-app-91b20.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:526718342576:android:4128c42e2a3bca70bf7275",
+        "android_client_info": {
+          "package_name": "com.example.app_bet"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBwdQezmAEd75M7ctyg4-0asRK1jrkQ07s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
