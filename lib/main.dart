@@ -3,9 +3,11 @@ import 'package:app_bet/controller/calculadora_bet.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:app_bet/utils/gerador_pdf.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+/* Dependências da pesquisa desativada.
 import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:app_bet/tela_consentimento.dart';
+*/
 
 void main() => runApp(const ProjetoBET());
 
@@ -50,6 +52,7 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
   bool? _temAgua;
   bool _calculoRealizado = false;
 
+  /* Pesquisa desativada na abertura do aplicativo.
   bool _exibirPopup = false;
   bool _pesquisaFinalizada = false;
   Timer? _timer;
@@ -87,10 +90,11 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
       _pesquisaFinalizada = true;
     });
   }
+  */
 
   @override
   void dispose() {
-    _timer?.cancel();
+    // _timer?.cancel();
     _comunidadeController.dispose();
     _moradoresController.dispose();
     _distanciaController.dispose();
@@ -202,7 +206,7 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
           // 1. O SEU APLICATIVO NORMAL FICA NO FUNDO
           IndexedStack(index: _indiceAtual, children: telas),
 
-          // 2. O POP-UP FICA POR CIMA (Se a variável for verdadeira)
+          /* Pop-up da pesquisa desativado.
           if (_exibirPopup)
             Positioned(
               top: 20,
@@ -268,6 +272,7 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
                 ),
               ),
             ),
+          */
         ],
       ),
       bottomNavigationBar: NavigationBar(
