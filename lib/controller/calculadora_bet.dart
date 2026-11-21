@@ -120,14 +120,9 @@ class CalculosBET {
   // cimento kg para piso
   double get cimentoKgPerdaPiso => cimentoSacoPerdaPiso * 50;
 
-  // Cimento total (sacos) - Soma de todas as etapas: Alvenaria, Reboco e Piso
-  double get cimentoSacosTotal {
-    double total = cimentoSacos + cimentoSacoComPerda + cimentoSacoPerdaPiso;
-    if ((total - total.truncate()) > 0.5) {
-      return total.ceilToDouble();
-    }
-    return total;
-  }
+  // Arredonda a compra após somar o consumo de todas as etapas.
+  int get cimentoSacosTotal =>
+      (cimentoSacos + cimentoSacoComPerda + cimentoSacoPerdaPiso).ceil();
 
   // Cimento total (kg) - Soma de todas as etapas: Alvenaria, Reboco e Piso
   double get cimentoKgTotal => cimentoKg + cimentoComPerda + cimentoKgPerdaPiso;

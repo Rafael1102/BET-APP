@@ -42,7 +42,7 @@ lib/
 A divisão de responsabilidades funciona da seguinte forma:
 1.  **Interface com o Usuário (Views)**: O arquivo `main.dart` atua como o ponto de entrada e implementa a interface de captação de dados (formulário) e exibição visual do relatório técnico (tabelas e imagens esquemáticas). Ele gerencia o estado da navegação por meio de uma barra inferior e um widget `IndexedStack`, que preserva os dados inseridos nas caixas de texto mesmo ao alternar de aba.
 2.  **Lógica e Matemática (Controller)**: O arquivo `calculadora_bet.dart` encapsula a totalidade das regras de dimensionamento de engenharia civil e saneamento ecológico na classe `CalculosBET`. Toda a reatividade da interface depende deste controlador.
-3.  **Serviço de Exportação (Utils)**: O arquivo `gerador_pdf.dart` abstrai o código de montagem do PDF. Ele recebe a instância ativa do controlador e traduz as variáveis em um arquivo com leiaute formatado, contendo cabeçalho institucional, tabelas de dados estruturais e a listagem de materiais.
+3.  **Serviço de Exportação (Utils)**: O arquivo `gerador_pdf.dart` usa os cálculos do controlador para montar a mesma lista de compras no PDF e no texto de compartilhamento.
 
 ---
 
@@ -178,7 +178,7 @@ A interface do aplicativo BET adota um design centrado na usabilidade rural e t�
     *   **Tabelas de Informações**: Listagem de todas as dimensões estruturais (Volume, Comprimento, Largura, Alturas das camadas) e a especificação de insumos divididos em cartões de cabeçalho verde, seguindo a ordem lógica da construção (Paredes $\rightarrow$ Reboco $\rightarrow$ Piso $\rightarrow$ Preenchimento e Plantio $\rightarrow$ Tubulações).
     *   **Submenus Expansíveis ("Ver Mais Detalhes" e "Quant. Traço")**: Reduzem o tamanho visual do relatório, permitindo que usuários mais avançados analisem volumes parciais das camadas e traços recomendados de mistura de concreto sem poluir a leitura geral dos materiais de compra.
 3.  **Botão de Ações Dinâmicas (Speed Dial)**:
-    *   Menu flutuante circular que surge na tela de relatórios e expande em duas opções com rótulos de texto descritivos: "Salvar relatório em PDF" (ícone vermelho de documento) e "Compartilhar Lista de Materiais" (ícone azul de partilha).
+    *   O menu flutuante da tela de relatório oferece as opções "Salvar lista de compras em PDF" e "Compartilhar lista de compras".
 
 ### 4.3 Implementação dos Cálculos
 
@@ -190,15 +190,10 @@ int get tijolos6Furos => tijolos6FurosCalculado.ceil();
 int get pneuInservivel => (comprimentoDaBet / 0.2).ceil();
 int get mudaBananeira => (1.25 * areaDoPisoDaBet).ceil();
 ```
-O cimento total utiliza uma condicional lógica personalizada para evitar que pequenos resíduos decimais façam o usuário comprar um saco a mais sem necessidade, aplicando arredondamento para cima apenas quando a sobra decimal é significativa ($> 0.5$ sacos):
+O total de sacos de cimento para compra soma o consumo de todas as etapas e arredonda o resultado uma única vez para cima.
 ```dart
-double get cimentoSacosTotal {
-  double total = cimentoSacos + cimentoSacoComPerda + cimentoSacoPerdaPiso;
-  if ((total - total.truncate()) > 0.5) {
-    return total.ceilToDouble();
-  }
-  return total;
-}
+int get cimentoSacosTotal =>
+    (cimentoSacos + cimentoSacoComPerda + cimentoSacoPerdaPiso).ceil();
 ```
 
 ### 4.4 Funcionalidades Implementadas
@@ -217,7 +212,7 @@ Funcionalidade lógica de tomada de decisão. O aplicativo avalia a resposta ref
 O sistema reúne os dados e os apresenta de forma ordenada e sequencial no visor do aparelho celular. A listagem é segregada por etapas cronológicas da construção, o que facilita o cronograma de compras física e a execução do trabalho por parte do pedreiro.
 
 #### 4.4.4 Exportação em PDF
-Criação automatizada de um documento de relatório técnico no formato padrão A4. A biblioteca `pdf` desenha o cabeçalho técnico com identificação do projeto, campo para preencher a comunidade rural atendida, número de moradores e volume cúbico final do projeto. A página principal do PDF exibe as tabelas de quantitativos e uma seção dedicada à **"Lista de Compras (Resumo)"**, desenhada com caixas de marcação físicas (checklist) que podem ser impressas para conferência no momento da aquisição dos materiais de construção civil.
+O PDF em formato A4 apresenta a lista de compras com uma linha e uma caixa de marcação por material. Cada linha mostra a quantidade total para a obra.
 
 #### 4.4.5 Compartilhamento de Informações
 Implementação de exportação instantânea do resumo de materiais. A rotina do serviço formata um texto em string estruturado com marcadores gráficos (como asteriscos para negrito e colchetes vazios `[ ]` representando checklist de tarefas). O sistema invoca a API do sistema operacional, permitindo enviar esses dados em formato texto sem a necessidade de baixar e enviar arquivos pesados, ideal para conexões rurais lentas.
@@ -251,12 +246,12 @@ sequenceDiagram
     rect rgb(230, 245, 230)
         Note over U, UI: Opção de Exportação (Menu Flutuante)
         alt Salvar em PDF
-            U->>UI: Seleciona "Salvar em PDF"
+            U->>UI: Seleciona "Salvar lista de compras em PDF"
             UI->>P: Executa gerarPDF(CalculosBET, distancia, comunidade)
             P->>E: Invoca gerenciador de impressão nativo (Printing.layoutPdf)
             E-->>U: Abre tela de salvamento de arquivo / impressão do celular
         else Compartilhar Lista
-            U->>UI: Seleciona "Compartilhar Lista de Materiais"
+            U->>UI: Seleciona "Compartilhar lista de compras"
             UI->>P: Solicita gerarTextoCompartilhamento(CalculosBET, distancia, comunidade)
             P-->>UI: Retorna texto formatado com checklist
             UI->>E: Invoca janela de compartilhamento nativa (Share.share)
@@ -278,6 +273,6 @@ sequenceDiagram
 3.  **Processamento da Recomendação de Engenharia**: O sistema realiza os cálculos de volume de evapotranspiração e dimensiona o comprimento, largura e áreas. Simultaneamente, avalia o estado do solo: se houver água subterrânea na escavação, o aplicativo seleciona o leiaute de "Alvenaria Suspensa" e exibe a imagem correspondente; caso contrário, seleciona o leiaute de "Alvenaria Escavada".
 4.  **Visualização do Relatório**: O aplicativo altera automaticamente o índice da aba ativa para exibir o relatório de dimensionamento. O usuário pode analisar item por item e expandir os menus expansivos para verificar volumes de escavação e traços de concreto.
 5.  **Ações de Saída**: O usuário utiliza o menu flutuante expansível para:
-    *   *Salvar em PDF*: Onde o gerador de arquivos compila as tabelas de materiais e gera um documento A4 com checklists prontos para impressão física.
+    *   *Salvar lista de compras em PDF* gera um checklist A4 com o total de cada material.
     *   *Compartilhar*: Onde o aplicativo compila uma mensagem de texto reativa e invoca a janela de compartilhamento do aparelho celular para envio rápido de insumos via aplicativos de mensagem.
 6.  **Participação na Pesquisa Científica**: Ao interagir com o pop-up temporário de avaliação de usabilidade acadêmica, o usuário acessa a tela de consentimento livre e esclarecido, de onde é direcionado de forma segura ao questionário acadêmico de validação científica (TCC/UFRA) hospedado externamente.

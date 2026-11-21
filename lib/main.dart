@@ -309,7 +309,7 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
                   child: const Icon(Icons.picture_as_pdf),
                   backgroundColor: Colors.red[700],
                   foregroundColor: Colors.white,
-                  label: "Salvar relatório em PDF",
+                  label: "Salvar lista de compras em PDF",
                   onTap: () {
                     int moradores =
                         int.tryParse(_moradoresController.text) ?? 0;
@@ -327,7 +327,7 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
                   child: const Icon(Icons.share),
                   backgroundColor: Colors.blue[700],
                   foregroundColor: Colors.white,
-                  label: 'Compartilhar Lista de Materiais',
+                  label: 'Compartilhar lista de compras',
                   labelStyle: const TextStyle(fontWeight: FontWeight.bold),
                   onTap: () {
                     int moradores =
@@ -344,7 +344,7 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
                         );
                     Share.share(
                       textoCompartilhamento,
-                      subject: 'Lista de Materiais BET - $comunidade',
+                      subject: 'Lista de Compras BET - $comunidade',
                     );
                     setState(() {
                       _indiceAtual = 0;
@@ -594,10 +594,13 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
           ),
 
           // SEÇÃO 2: MATERIAIS
+          _buildRow(
+            "Cimento para compra (total)",
+            "${calc.cimentoSacosTotal} sacos de 50 kg",
+          ),
           _buildSectionHeader("Materiais para construção das paredes da BET"),
           _buildRow("Areia Média", "${calc.areiaMedia.toStringAsFixed(2)} m³"),
           _buildRow("Cimento", "${calc.cimentoKg.toStringAsFixed(2)} kg"),
-          _buildRow("Cimento", "${calc.cimentoSacos.toStringAsFixed(2)} sacos"),
           _buildRow("Tijolos 6 furos", "${calc.tijolos6Furos} unid."),
 
           // SEÇÃO 3: MATERIAIS DA PAREDE
@@ -613,10 +616,6 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
             "${calc.areiaMediaReboco.toStringAsFixed(2)} m³",
           ),
           _buildRow("Cimento", "${calc.cimentoComPerda.toStringAsFixed(2)} kg"),
-          _buildRow(
-            "Cimento",
-            "${calc.cimentoSacoComPerda.toStringAsFixed(2)} sacos",
-          ),
           _buildMenuExpansivo(
             titulo: "Quant. traço",
             itens: [_buildRow("Traço", calc.tracoReboco)],
@@ -632,10 +631,6 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
           _buildRow(
             "Cimento",
             "${calc.cimentoKgPerdaPiso.toStringAsFixed(2)} kg",
-          ),
-          _buildRow(
-            "Cimento",
-            "${calc.cimentoSacoPerdaPiso.toStringAsFixed(2)} sacos",
           ),
           _buildRow(
             "Pedra Brita/Seixo",
