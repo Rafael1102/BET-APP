@@ -69,15 +69,15 @@ class CalculosBET {
       areiaMedia + areiaMediaReboco + areiaParaPiso + areiaMediaPreenchimento;
 
   // 12. Tijolos 6 furos (unid)
-  // Tabela: "42 tijolos/m2 * AREA DA BET"
+  // A planilha usa 42 tijolos/m² na estimativa que considera 10% de perda.
   double get tijolos6FurosCalculado => 42 * areaAlvenariaBetMaisCanteiro;
 
   int get tijolos6Furos => tijolos6FurosCalculado.ceil();
 
-  // 13. Cimento (sacos)
-  // Tabela: "1 saco/250 tijolos" (Nota: O valor final da tabela 5.89 inclui piso e reboco)
-  // Mantendo a fórmula composta para atingir o valor correto de saída:
+  // Cimento para assentamento das paredes e do canteiro (1 saco/250 tijolos).
   double get cimentoSacos => tijolos6FurosCalculado / 250.0;
+
+  int get cimentoSacosAlvenaria => cimentoSacos.ceil();
 
   double get cimentoComPerda =>
       ((6 * areaAlvenariaBetMaisCanteiro) * 1.1); // Considerando 10% de perda

@@ -190,8 +190,10 @@ int get tijolos6Furos => tijolos6FurosCalculado.ceil();
 int get pneuInservivel => (comprimentoDaBet / 0.2).ceil();
 int get mudaBananeira => (1.25 * areaDoPisoDaBet).ceil();
 ```
-O total de sacos de cimento para compra soma o consumo de todas as etapas e arredonda o resultado uma única vez para cima.
+O relatório mostra os sacos de cimento para assentar os tijolos das paredes e do canteiro. A planilha usa 42 tijolos de seis furos por metro quadrado na estimativa com perda e divide o resultado por 250 para obter o consumo de cimento em sacos. O relatório arredonda essa quantidade para cima. A lista de compras soma os consumos de alvenaria, reboco e piso antes de arredondar para cima.
 ```dart
+int get cimentoSacosAlvenaria => cimentoSacos.ceil();
+
 int get cimentoSacosTotal =>
     (cimentoSacos + cimentoSacoComPerda + cimentoSacoPerdaPiso).ceil();
 ```

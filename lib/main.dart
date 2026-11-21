@@ -555,6 +555,10 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
             "Área alvenaria BET + canteiro",
             "${calc.areaAlvenariaBetMaisCanteiro.toStringAsFixed(1)} m²",
           ),
+          _buildRow(
+            "Cimento para alvenaria",
+            "${calc.cimentoSacosAlvenaria} sacos de 50 kg",
+          ),
 
           _buildMenuExpansivo(
             titulo: "Ver Mais Detalhes",
@@ -599,10 +603,6 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
           ),
 
           // SEÇÃO 2: MATERIAIS
-          _buildRow(
-            "Cimento para compra (total)",
-            "${calc.cimentoSacosTotal} sacos de 50 kg",
-          ),
           _buildSectionHeader("Materiais para construção das paredes da BET"),
           _buildRow("Areia Média", "${calc.areiaMedia.toStringAsFixed(2)} m³"),
           _buildRow("Cimento", "${calc.cimentoKg.toStringAsFixed(2)} kg"),
