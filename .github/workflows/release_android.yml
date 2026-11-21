@@ -3,7 +3,9 @@ name: Publicar APK Android
 on:
   push:
     branches: [main]
-    paths: [pubspec.yaml]
+    paths:
+      - pubspec.yaml
+      - .github/workflows/release_android.yml
   workflow_dispatch:
 
 permissions:
@@ -15,6 +17,7 @@ concurrency:
 
 jobs:
   release:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ github.token }}
@@ -25,8 +28,15 @@ jobs:
       - name: Identificar a versão
         id: version
         run: |
-          version=$(sed -nE 's/^version: ([^+]+)\+[0-9]+$/\1/p' pubspec.yaml)
+          version_pattern='s/^version: ([^+]+)\+[0-9]+$/\1/p'
+          version=$(sed -nE "$version_pattern" pubspec.yaml)
           test -n "$version"
+          git fetch --no-tags --depth=1 origin main
+          current_version=$(git show FETCH_HEAD:pubspec.yaml | sed -nE "$version_pattern")
+          if [[ "$version" != "$current_version" ]]; then
+            echo "A main já está em outra versão."
+            exit 0
+          fi
           tag="v$version"
           echo "tag=$tag" >> "$GITHUB_OUTPUT"
           if gh release view "$tag" >/dev/null 2>&1; then
@@ -34,32 +44,40 @@ jobs:
           fi
 
       - name: Configurar o Java
-        if: steps.version.outputs.published != 'true'
+        if: steps.version.outputs.tag != '' && steps.version.outputs.published != 'true'
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
 
       - name: Configurar o Flutter
-        if: steps.version.outputs.published != 'true'
+        if: steps.version.outputs.tag != '' && steps.version.outputs.published != 'true'
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.44.5'
 
       - name: Compilar o APK
-        if: steps.version.outputs.published != 'true'
+        if: steps.version.outputs.tag != '' && steps.version.outputs.published != 'true'
         run: flutter build apk --release
 
       - name: Publicar a versão no GitHub
-        if: steps.version.outputs.published != 'true'
+        if: steps.version.outputs.tag != '' && steps.version.outputs.published != 'true'
         env:
           RELEASE_TAG: ${{ steps.version.outputs.tag }}
         run: |
-          apk="BET-APP-${RELEASE_TAG}.apk"
-          cp build/app/outputs/flutter-apk/app-release.apk "$apk"
-          options=()
-          if [[ "$RELEASE_TAG" == *-* ]]; then
-            options+=(--prerelease --latest=false)
+          cp build/app/outputs/flutter-apk/app-release.apk BET-APP.apk
+          gh release create "$RELEASE_TAG" BET-APP.apk \
+            --target "$GITHUB_SHA" --title "$RELEASE_TAG" --generate-notes --latest
+
+      - name: Padronizar o APK da versão já publicada
+        if: steps.version.outputs.published == 'true'
+        env:
+          RELEASE_TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          apk=$(gh release view "$RELEASE_TAG" --json assets \
+            --jq '.assets[] | select(.name == "BET-APP.apk" and .state == "uploaded") | .name')
+          if [[ -z "$apk" ]]; then
+            gh release download "$RELEASE_TAG" --pattern "BET-APP-${RELEASE_TAG}.apk" --output BET-APP.apk
+            gh release upload "$RELEASE_TAG" BET-APP.apk
           fi
-          gh release create "$RELEASE_TAG" "$apk" \
-            --target "$GITHUB_SHA" --title "$RELEASE_TAG" --generate-notes "${options[@]}"
+          gh release edit "$RELEASE_TAG" --prerelease=false --latest
