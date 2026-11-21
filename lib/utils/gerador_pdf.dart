@@ -231,7 +231,7 @@ class GeradorPDF {
             buildItemRow("Cimento", "${calc.cimentoKg.toStringAsFixed(2)} kg"),
             buildItemRow(
               "Cimento",
-              "${calc.cimentoSacos.toStringAsFixed(2)} sacos",
+              "${calc.cimentoSacosAlvenaria} sacos de 50 kg",
             ),
             buildItemRow("Tijolo 6 furos", "${calc.tijolos6Furos} unid."),
 
@@ -249,10 +249,6 @@ class GeradorPDF {
               "Cimento",
               "${calc.cimentoComPerda.toStringAsFixed(2)} kg",
             ),
-            buildItemRow(
-              "Cimento",
-              "${calc.cimentoSacoComPerda.toStringAsFixed(2)} sacos",
-            ),
             buildItemRow("Traço para reboco da paredes", calc.tracoReboco),
 
             // 4. PISO
@@ -268,10 +264,6 @@ class GeradorPDF {
             buildItemRow(
               "Cimento",
               "${calc.cimentoKgPerdaPiso.toStringAsFixed(2)} kg",
-            ),
-            buildItemRow(
-              "Cimento",
-              "${calc.cimentoSacoPerdaPiso.toStringAsFixed(2)} sacos",
             ),
             buildItemRow(
               "Pedra Brita/Seixo",
@@ -464,9 +456,9 @@ class GeradorPDF {
 
 *1. CONSTRUÇÃO E ALVENARIA*
 [ ] Tijolos 6 furos: ${calc.tijolos6Furos} unid.
-[ ] Cimento (Paredes): ${calc.cimentoSacos.toStringAsFixed(2)} sacos (${calc.cimentoKg.toStringAsFixed(2)} kg)
-[ ] Cimento (Reboco): ${calc.cimentoSacoComPerda.toStringAsFixed(2)} sacos (${calc.cimentoComPerda.toStringAsFixed(2)} kg)
-[ ] Cimento (Piso): ${calc.cimentoSacoPerdaPiso.toStringAsFixed(2)} sacos (${calc.cimentoKgPerdaPiso.toStringAsFixed(2)} kg)
+[ ] Cimento (Paredes): ${calc.cimentoSacosAlvenaria} sacos de 50 kg
+[ ] Cimento (Reboco): ${calc.cimentoComPerda.toStringAsFixed(2)} kg
+[ ] Cimento (Piso): ${calc.cimentoKgPerdaPiso.toStringAsFixed(2)} kg
 [ ] Cimento Total: ${calc.cimentoSacosTotal} sacos de 50 kg
 [ ] Areia Total: ${calc.areiaMediaTotal.ceil()} m³
 [ ] Pedra Brita/Seixo: ${calc.pedraBritaOuSeixo.ceil()} m³
