@@ -104,7 +104,7 @@ O aplicativo calcula a lista de compras aplicando taxas de rendimento de materia
         $$\text{Cimento}_{\text{piso}} = (A_{\text{piso}} \times 0,316) \times 1,1 \text{ sacos}$$
     *   *Cimento Total*:
         $$\text{Cimento}_{\text{total}} = \text{Cimento}_{\text{alv}} + \text{Cimento}_{\text{reboco}} + \text{Cimento}_{\text{piso}} \text{ sacos}$$
-        *(Nota: Caso a fração decimal do cimento total ultrapasse 0,5 sacos, o sistema arredonda a compra para cima usando a função `ceilToDouble()` para evitar a falta de cimento no canteiro de obras).*
+        A lista de compras arredonda o total de sacos de cimento para cima.
 *   **Areia Média ($\text{m}^3$)**:
     *   *Alvenaria*: $A_{\text{alv\_total}} \times 0,0175 \text{ m}^3$
     *   *Reboco (com 10% perda)*: $(A_{\text{alv\_total}} \times 0,0124) \times 1,1 \text{ m}^3$
@@ -184,9 +184,9 @@ A interface do aplicativo BET adota um design centrado na usabilidade rural e t�
 
 A execução matemática ocorre em tempo de execução de forma preguiçosa (*lazy evaluation*). A classe `CalculosBET` realiza as operações por meio de funções puras e expressões matemáticas baseadas nas propriedades do objeto. 
 
-O controlador garante consistência nas conversões de unidades estruturais. Os cálculos de volume baseiam-se em valores flutuantes de dupla precisão (`double`), assegurando exatidão no volume total em metros cúbicos ($m^3$). No entanto, para insumos comerciais que são comercializados apenas em frações inteiras no varejo, o Dart realiza a conversão automática para inteiros (`int`) arredondando sempre para cima. Exemplo prático de código no controlador:
+O controlador mantém os valores decimais para os cálculos de consumo e volume. A quantidade inteira de tijolos segue o valor exibido na planilha, arredondado para o inteiro mais próximo. Pneus e mudas são arredondados para cima.
 ```dart
-int get tijolos6Furos => tijolos6FurosCalculado.ceil();
+int get tijolos6Furos => tijolos6FurosCalculado.round();
 int get pneuInservivel => (comprimentoDaBet / 0.2).ceil();
 int get mudaBananeira => (1.25 * areaDoPisoDaBet).ceil();
 ```
@@ -214,7 +214,7 @@ Funcionalidade lógica de tomada de decisão. O aplicativo avalia a resposta ref
 O sistema reúne os dados e os apresenta de forma ordenada e sequencial no visor do aparelho celular. A listagem é segregada por etapas cronológicas da construção, o que facilita o cronograma de compras física e a execução do trabalho por parte do pedreiro.
 
 #### 4.4.4 Exportação em PDF
-O PDF em formato A4 apresenta a lista de compras com uma linha e uma caixa de marcação por material. Cada linha mostra a quantidade total para a obra.
+O PDF em formato A4 apresenta a lista de compras com uma linha e uma caixa de marcação por material. O PDF e o compartilhamento mostram o total de cada material em unidades inteiras, arredondando as quantidades fracionárias para cima e usando a quantidade de tijolos exibida na planilha.
 
 #### 4.4.5 Compartilhamento de Informações
 Implementação de exportação instantânea do resumo de materiais. A rotina do serviço formata um texto em string estruturado com marcadores gráficos (como asteriscos para negrito e colchetes vazios `[ ]` representando checklist de tarefas). O sistema invoca a API do sistema operacional, permitindo enviar esses dados em formato texto sem a necessidade de baixar e enviar arquivos pesados, ideal para conexões rurais lentas.

@@ -72,7 +72,8 @@ class CalculosBET {
   // A planilha usa 42 tijolos/m² na estimativa que considera 10% de perda.
   double get tijolos6FurosCalculado => 42 * areaAlvenariaBetMaisCanteiro;
 
-  int get tijolos6Furos => tijolos6FurosCalculado.ceil();
+  // Reproduz o valor exibido sem casas decimais na planilha.
+  int get tijolos6Furos => tijolos6FurosCalculado.round();
 
   // Cimento para assentamento das paredes e do canteiro (1 saco/250 tijolos).
   double get cimentoSacos => tijolos6FurosCalculado / 250.0;
