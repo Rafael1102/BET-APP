@@ -1,39 +1,12 @@
+//import 'package:flutter/material.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:app_bet/controller/calculadora_bet.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'dart:typed_data';
 
 class GeradorPDF {
-  static List<(String, String)> _listaDeCompras(
-    CalculosBET calc,
-    double distanciaCasa,
-  ) {
-    final barrasPVC100 = calc.tuboEsgoto100Barras(distanciaCasa);
-    return [
-      ('Tijolos 6 furos', '${calc.tijolos6Furos} unid.'),
-      ('Cimento', '${calc.cimentoSacosTotal} sacos de 50 kg'),
-      ('Areia média', '${calc.areiaMediaTotal.ceil()} m³'),
-      ('Pedra brita ou seixo', '${calc.pedraBritaOuSeixo.ceil()} m³'),
-      (
-        'Aditivo impermeabilizante',
-        '${calc.aditivoImpermeabilizante.ceil()} L',
-      ),
-      ('Pneus inservíveis', '${calc.pneuInservivel} unid.'),
-      ('Entulho/Pedras (limpo)', '${calc.entulhoPedras.ceil()} m³'),
-      ('Terra preta/Substrato', '${calc.terraPretaSolo.ceil()} m³'),
-      ('Mudas de bananeira', '${calc.mudaBananeira} unid.'),
-      ('Adubo diverso', '${calc.aduboDiverso.ceil()} L'),
-      ('Tubo PVC 100 mm (barra de 6 m)', '$barrasPVC100 unid.'),
-      ('Tubo PVC 75 mm', '${calc.tuboEsgoto75} m'),
-      ('Tubo PVC 40 mm', '${calc.tuboEsgoto40} m'),
-      ('Tampão PVC 100 mm', '${calc.tampaoPVC100} unid.'),
-      ('Tampão PVC 75 mm', '${calc.tampaoPVC75} unid.'),
-      ('Luva de esgoto 100 mm', '${calc.luvaEsgoto100} unid.'),
-      ('Tê PVC 100 mm', '${calc.tePVC100} unid.'),
-    ];
-  }
-
   static Future<void> gerarPDF(
     CalculosBET calc,
     double distanciaCasa,
@@ -57,7 +30,7 @@ class GeradorPDF {
     // Carrega a logo
     pw.MemoryImage? logoImage;
     try {
-      final bytes = await rootBundle.load(
+      final ByteData bytes = await rootBundle.load(
         'lib/img-utils/logo-bet.png',
       );
       logoImage = pw.MemoryImage(bytes.buffer.asUint8List());
@@ -328,7 +301,7 @@ class GeradorPDF {
               "${calc.terraPretaSolo.toStringAsFixed(2)} m³",
             ),
             buildItemRow("Mudas de Bananeira", "${calc.mudaBananeira} unid."),
-            buildItemRow("Adubo Diverso", "${calc.aduboDiverso.ceil()} L"),
+            buildItemRow("Adubo Diverso", "${calc.aduboDiverso} L"),
 
             // 6. TUBULAÇÃO
             buildSectionHeader("6. Tubulações de Esgoto"),
@@ -395,19 +368,19 @@ class GeradorPDF {
                   ),
                   buildChecklistItem(
                     "Cimento Total",
-                    "${calc.cimentoSacosTotal} sacos de 50 kg",
+                    "${calc.cimentoSacosTotal.toStringAsFixed(2)} sacos",
                   ),
                   buildChecklistItem(
                     "Areia Total",
-                    "${calc.areiaMediaTotal.ceil()} m³",
+                    "${calc.areiaMediaTotal.toStringAsFixed(2)} m³",
                   ),
                   buildChecklistItem(
                     "Pedra Brita/Seixo",
-                    "${calc.pedraBritaOuSeixo.ceil()} m³",
+                    "${calc.pedraBritaOuSeixo.toStringAsFixed(2)} m³",
                   ),
                   buildChecklistItem(
                     "Aditivo Impermeabilizante",
-                    "${calc.aditivoImpermeabilizante.ceil()} L",
+                    "${calc.aditivoImpermeabilizante.toStringAsFixed(2)} L",
                   ),
                   pw.SizedBox(height: 12),
 
@@ -422,20 +395,17 @@ class GeradorPDF {
                   ),
                   buildChecklistItem(
                     "Entulho/Pedras (Limpo)",
-                    "${calc.entulhoPedras.ceil()} m³",
+                    "${calc.entulhoPedras.toStringAsFixed(2)} m³",
                   ),
                   buildChecklistItem(
                     "Terra Preta/Substrato",
-                    "${calc.terraPretaSolo.ceil()} m³",
+                    "${calc.terraPretaSolo.toStringAsFixed(2)} m³",
                   ),
                   buildChecklistItem(
                     "Mudas de Bananeira",
                     "${calc.mudaBananeira} unid.",
                   ),
-                  buildChecklistItem(
-                    "Adubo Diverso",
-                    "${calc.aduboDiverso.ceil()} L",
-                  ),
+                  buildChecklistItem("Adubo Diverso", "${calc.aduboDiverso} L"),
                   pw.SizedBox(height: 12),
 
                   pw.Text(
@@ -457,14 +427,9 @@ class GeradorPDF {
                     "Tampão PVC 75mm",
                     "${calc.tampaoPVC75} unid.",
                   ),
-                  buildChecklistItem(
-                    "Luva Esgoto 100mm",
-                    "${calc.luvaEsgoto100} unid.",
-                  ),
-                  buildChecklistItem("Tê PVC 100mm", "${calc.tePVC100} unid."),
                   pw.SizedBox(height: 15),
                   pw.Text(
-                    "* Valores marcados como 'Total' representam a soma de todas as etapas da obra (construção, reboco, piso e preenchimento). Quantidades de compra arredondadas para cima.",
+                    "* Valores marcados como 'Total' representam a soma de todas as etapas da obra (construção, reboco, piso e preenchimento).",
                     style: pw.TextStyle(
                       fontSize: 9,
                       fontStyle: pw.FontStyle.italic,
@@ -489,13 +454,40 @@ class GeradorPDF {
     double distanciaCasa,
     String nomeComunidade,
   ) {
-    final comunidade = nomeComunidade.trim();
-    return [
-      '*LISTA DE COMPRAS - PROJETO BET*',
-      if (comunidade.isNotEmpty) comunidade,
-      '',
-      for (final (material, quantidade) in _listaDeCompras(calc, distanciaCasa))
-        '[ ] $material: $quantidade',
-    ].join('\n');
+    return """
+*LISTA DE MATERIAIS - PROJETO BET*
+---------------------------------------
+*DADOS DO PROJETO:*
+- Moradores: ${calc.n}
+- Volume da BET: ${calc.volumeDaBet.toStringAsFixed(2)} m³
+---------------------------------------
+
+*1. CONSTRUÇÃO E ALVENARIA*
+[ ] Tijolos 6 furos: ${calc.tijolos6Furos} unid.
+[ ] Cimento (Paredes): ${calc.cimentoSacos.toStringAsFixed(2)} sacos (${calc.cimentoKg.toStringAsFixed(2)} kg)
+[ ] Cimento (Reboco): ${calc.cimentoSacoComPerda.toStringAsFixed(2)} sacos (${calc.cimentoComPerda.toStringAsFixed(2)} kg)
+[ ] Cimento (Piso): ${calc.cimentoSacoPerdaPiso.toStringAsFixed(2)} sacos (${calc.cimentoKgPerdaPiso.toStringAsFixed(2)} kg)
+[ ] Cimento Total: ${calc.cimentoSacosTotal.toStringAsFixed(2)} sacos
+[ ] Areia Total: ${calc.areiaMediaTotal.toStringAsFixed(2)} m³
+[ ] Pedra Brita/Seixo: ${calc.pedraBritaOuSeixo.toStringAsFixed(2)} m³
+[ ] Aditivo Impermeabilizante: ${calc.aditivoImpermeabilizante.toStringAsFixed(2)} L
+
+*2. PREENCHIMENTO E PAISAGISMO*
+[ ] Pneus Inservíveis: ${calc.pneuInservivel} unid.
+[ ] Entulho/Pedras (Limpo): ${calc.entulhoPedras.toStringAsFixed(2)} m³
+[ ] Terra Preta/Substrato: ${calc.terraPretaSolo.toStringAsFixed(2)} m³
+[ ] Mudas de Bananeira: ${calc.mudaBananeira} unid.
+[ ] Adubo Diverso: ${calc.aduboDiverso} L
+
+*3. TUBULAÇÃO DE ESGOTO*
+[ ] Tubo PVC 100mm: ${calc.tuboEsgoto100(distanciaCasa).toStringAsFixed(1)} m (${calc.tuboEsgoto100Barras(distanciaCasa)} varas)
+[ ] Tubo PVC 75mm: ${calc.tuboEsgoto75} m
+[ ] Tubo PVC 40mm: ${calc.tuboEsgoto40} m
+[ ] Tampão PVC 100mm: ${calc.tampaoPVC100} unid.
+[ ] Tampão PVC 75mm: ${calc.tampaoPVC75} unid.
+
+---------------------------------------
+Gerado pelo BET APP
+""";
   }
 }
