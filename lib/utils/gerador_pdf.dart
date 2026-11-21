@@ -301,7 +301,7 @@ class GeradorPDF {
               "${calc.terraPretaSolo.toStringAsFixed(2)} m³",
             ),
             buildItemRow("Mudas de Bananeira", "${calc.mudaBananeira} unid."),
-            buildItemRow("Adubo Diverso", "${calc.aduboDiverso} L"),
+            buildItemRow("Adubo Diverso", "${calc.aduboDiverso.ceil()} L"),
 
             // 6. TUBULAÇÃO
             buildSectionHeader("6. Tubulações de Esgoto"),
@@ -368,19 +368,19 @@ class GeradorPDF {
                   ),
                   buildChecklistItem(
                     "Cimento Total",
-                    "${calc.cimentoSacosTotal.toStringAsFixed(2)} sacos",
+                    "${calc.cimentoSacosTotal} sacos de 50 kg",
                   ),
                   buildChecklistItem(
                     "Areia Total",
-                    "${calc.areiaMediaTotal.toStringAsFixed(2)} m³",
+                    "${calc.areiaMediaTotal.ceil()} m³",
                   ),
                   buildChecklistItem(
                     "Pedra Brita/Seixo",
-                    "${calc.pedraBritaOuSeixo.toStringAsFixed(2)} m³",
+                    "${calc.pedraBritaOuSeixo.ceil()} m³",
                   ),
                   buildChecklistItem(
                     "Aditivo Impermeabilizante",
-                    "${calc.aditivoImpermeabilizante.toStringAsFixed(2)} L",
+                    "${calc.aditivoImpermeabilizante.ceil()} L",
                   ),
                   pw.SizedBox(height: 12),
 
@@ -395,17 +395,17 @@ class GeradorPDF {
                   ),
                   buildChecklistItem(
                     "Entulho/Pedras (Limpo)",
-                    "${calc.entulhoPedras.toStringAsFixed(2)} m³",
+                    "${calc.entulhoPedras.ceil()} m³",
                   ),
                   buildChecklistItem(
                     "Terra Preta/Substrato",
-                    "${calc.terraPretaSolo.toStringAsFixed(2)} m³",
+                    "${calc.terraPretaSolo.ceil()} m³",
                   ),
                   buildChecklistItem(
                     "Mudas de Bananeira",
                     "${calc.mudaBananeira} unid.",
                   ),
-                  buildChecklistItem("Adubo Diverso", "${calc.aduboDiverso} L"),
+                  buildChecklistItem("Adubo Diverso", "${calc.aduboDiverso.ceil()} L"),
                   pw.SizedBox(height: 12),
 
                   pw.Text(
@@ -467,17 +467,17 @@ class GeradorPDF {
 [ ] Cimento (Paredes): ${calc.cimentoSacos.toStringAsFixed(2)} sacos (${calc.cimentoKg.toStringAsFixed(2)} kg)
 [ ] Cimento (Reboco): ${calc.cimentoSacoComPerda.toStringAsFixed(2)} sacos (${calc.cimentoComPerda.toStringAsFixed(2)} kg)
 [ ] Cimento (Piso): ${calc.cimentoSacoPerdaPiso.toStringAsFixed(2)} sacos (${calc.cimentoKgPerdaPiso.toStringAsFixed(2)} kg)
-[ ] Cimento Total: ${calc.cimentoSacosTotal.toStringAsFixed(2)} sacos
-[ ] Areia Total: ${calc.areiaMediaTotal.toStringAsFixed(2)} m³
-[ ] Pedra Brita/Seixo: ${calc.pedraBritaOuSeixo.toStringAsFixed(2)} m³
-[ ] Aditivo Impermeabilizante: ${calc.aditivoImpermeabilizante.toStringAsFixed(2)} L
+[ ] Cimento Total: ${calc.cimentoSacosTotal} sacos de 50 kg
+[ ] Areia Total: ${calc.areiaMediaTotal.ceil()} m³
+[ ] Pedra Brita/Seixo: ${calc.pedraBritaOuSeixo.ceil()} m³
+[ ] Aditivo Impermeabilizante: ${calc.aditivoImpermeabilizante.ceil()} L
 
 *2. PREENCHIMENTO E PAISAGISMO*
 [ ] Pneus Inservíveis: ${calc.pneuInservivel} unid.
-[ ] Entulho/Pedras (Limpo): ${calc.entulhoPedras.toStringAsFixed(2)} m³
-[ ] Terra Preta/Substrato: ${calc.terraPretaSolo.toStringAsFixed(2)} m³
+[ ] Entulho/Pedras (Limpo): ${calc.entulhoPedras.ceil()} m³
+[ ] Terra Preta/Substrato: ${calc.terraPretaSolo.ceil()} m³
 [ ] Mudas de Bananeira: ${calc.mudaBananeira} unid.
-[ ] Adubo Diverso: ${calc.aduboDiverso} L
+[ ] Adubo Diverso: ${calc.aduboDiverso.ceil()} L
 
 *3. TUBULAÇÃO DE ESGOTO*
 [ ] Tubo PVC 100mm: ${calc.tuboEsgoto100(distanciaCasa).toStringAsFixed(1)} m (${calc.tuboEsgoto100Barras(distanciaCasa)} varas)
